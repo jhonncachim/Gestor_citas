@@ -12,13 +12,14 @@ package com.mycompany.gestor_citas;
  * Clase Servicio: representa un servicio que puede ofrecer un profesional,
  * con id, nombre, precio y duración (en minutos).
  */
-// Clase Servicio que representa lo que ofrece el profesional
 public class Servicio {
+    private int id; // ID único del servicio
     private String nombre;
     private int duracion; // en minutos
     private double precio;
 
-    public Servicio(String nombre, int duracion, double precio) {
+    public Servicio(int id, String nombre, int duracion, double precio) {
+        this.id = id;
         this.nombre = nombre;
         this.duracion = duracion;
         this.precio = precio;
@@ -26,10 +27,13 @@ public class Servicio {
 
     // Mostrar los datos del servicio
     public void mostrarServicio() {
-        System.out.println("Servicio: " + nombre + " (" + duracion + " min, $" + precio + ")");
+        System.out.println("ID: " + id + " | Servicio: " + nombre + " (" + duracion + " min, $" + precio + ")");
     }
 
     // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
