@@ -4,23 +4,21 @@
  */
 package com.mycompany.gestor_citas;
 import java.util.regex.Pattern;
-/**
- *
- * @author ASUS VIVOBOOK
- */
+
 /**
  * Clase abstracta Persona: superclase para Cliente y Profesional.
  * Se declara abstracta porque no queremos instanciar personas genéricas,
  * solo subtipos concretos (Cliente, Profesional).
  */
-// Clase abstracta base de Cliente y Profesional
 public abstract class Persona {
-    protected String nombre;
-    protected String telefono;
-    protected String correo;
+    protected int id; // ID único de la persona
+    protected String nombre;// Nombre de la persona
+    protected String telefono;// Telefono de la persona 
+    protected String correo;// Correo de la persona 
 
     // Constructor
-    public Persona(String nombre, String telefono, String correo) {
+    public Persona(int id, String nombre, String telefono, String correo) {
+        this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
         // Validamos el correo con expresión regular
@@ -31,20 +29,24 @@ public abstract class Persona {
         }
     }
 
-    // Método para mostrar información de la persona
+    // Mostrar información de la persona
     public void mostrarInfo() {
+        System.out.println("ID: " + id);
         System.out.println("Nombre: " + nombre);
         System.out.println("Teléfono: " + telefono);
         System.out.println("Correo: " + correo);
     }
 
-    // Validación simple de correo
+    // Validación de correo
     private boolean validarCorreo(String correo) {
         String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         return Pattern.matches(regex, correo);
     }
 
     // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
