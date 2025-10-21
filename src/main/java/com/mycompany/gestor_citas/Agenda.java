@@ -106,4 +106,14 @@ public class Agenda {
     public ArrayList<Cliente> getClientes() { return clientes; }
     public ArrayList<Profesional> getProfesionales() { return profesionales; }
     public ArrayList<Servicio> getServicios() { return servicios; }
+
+    public void agregarCita(Cita cita) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'agregarCita'");
+    }
+
+    public void listarCitas() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarCitas'");
+    }
 }
