@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.gestor_citas;
-
+import java.util.regex.Pattern;
 /**
  *
  * @author ASUS VIVOBOOK
@@ -13,25 +13,46 @@ package com.mycompany.gestor_citas;
  * Se declara abstracta porque no queremos instanciar personas genéricas,
  * solo subtipos concretos (Cliente, Profesional).
  */
+// Clase abstracta base de Cliente y Profesional
 public abstract class Persona {
-    // Atributos protegidos para visibilidad en subclases
-    protected String id;
     protected String nombre;
     protected String telefono;
+    protected String correo;
 
-    // Constructor que inicializa los atributos básicos
-    public Persona(String id, String nombre, String telefono) {
-        this.id = id;
+    // Constructor
+    public Persona(String nombre, String telefono, String correo) {
         this.nombre = nombre;
         this.telefono = telefono;
+        // Validamos el correo con expresión regular
+        if (validarCorreo(correo)) {
+            this.correo = correo;
+        } else {
+            this.correo = "correo_invalido@desconocido.com";
+        }
     }
 
-    // Getters (encapsulamiento)
-    public String getId() { return id; }
-    public String getNombre() { return nombre; }
-    public String getTelefono() { return telefono; }
+    // Método para mostrar información de la persona
+    public void mostrarInfo() {
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Teléfono: " + telefono);
+        System.out.println("Correo: " + correo);
+    }
 
-    // Setters (si en algún caso necesitamos modificar los datos)
+    // Validación simple de correo
+    private boolean validarCorreo(String correo) {
+        String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        return Pattern.matches(regex, correo);
+    }
+
+    // Getters y Setters
+    public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { 
+        if (validarCorreo(correo)) this.correo = correo;
+    }
 }
