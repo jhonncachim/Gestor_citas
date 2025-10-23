@@ -69,7 +69,7 @@ public class GestorArchivos {
             }
             System.out.println(" Clientes cargados correctamente.");
         } catch (FileNotFoundException e) {
-            System.out.println("ℹ️ No se encontró 'clientes.csv' (se creará al guardar).");
+            System.out.println("ℹ No se encontró 'clientes.csv' (se creará al guardar).");
         } catch (IOException e) {
             System.out.println(" Error al leer clientes: " + e.getMessage());
         }
@@ -116,7 +116,7 @@ public class GestorArchivos {
             }
             System.out.println(" Profesionales cargados correctamente.");
         } catch (FileNotFoundException e) {
-            System.out.println("ℹ️ No se encontró 'profesionales.csv' (se creará al guardar).");
+            System.out.println("ℹ No se encontró 'profesionales.csv' (se creará al guardar).");
         } catch (IOException e) {
             System.out.println(" Error al leer profesionales: " + e.getMessage());
         }
@@ -162,7 +162,7 @@ public class GestorArchivos {
             }
             System.out.println(" Servicios cargados correctamente.");
         } catch (FileNotFoundException e) {
-            System.out.println("ℹ️ No se encontró 'servicios.csv' (se creará al guardar).");
+            System.out.println(" No se encontró 'servicios.csv' (se creará al guardar).");
         } catch (IOException e) {
             System.out.println(" Error al leer servicios: " + e.getMessage());
         }
@@ -199,7 +199,7 @@ public class GestorArchivos {
             }
             System.out.println(" Citas cargadas correctamente.");
         } catch (FileNotFoundException e) {
-            System.out.println("ℹ️ No se encontró 'citas.csv' (se creará al guardar).");
+            System.out.println(" No se encontró 'citas.csv' (se creará al guardar).");
         } catch (IOException e) {
             System.out.println(" Error al leer citas: " + e.getMessage());
         }
