@@ -11,7 +11,7 @@ package com.mycompany.gestor_citas;
 /**
  * Cliente extiende Persona. Representa a la persona que solicita el servicio.
  */
-public class Cliente extends Persona {
+public class Cliente extends Persona {// herencia 
 
     // Constructor que llama al constructor de la superclase Persona
     public Cliente(int id, String nombre, String telefono, String correo) {

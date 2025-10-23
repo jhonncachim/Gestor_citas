@@ -14,14 +14,14 @@ import java.util.ArrayList;
  * Profesional extiende Persona y tiene una lista de servicios que ofrece.
  * Aquí usamos composición: el profesional "tiene" servicios.
  */
-public class Profesional extends Persona {
+public class Profesional extends Persona { // herencia 
     private String especialidad; 
-    private ArrayList<Servicio> servicios;
+    private final ArrayList<Servicio> servicios; // Composicion
 
     public Profesional(int id, String nombre, String telefono, String correo, String especialidad) {
         super(id, nombre, telefono, correo);
         this.especialidad = especialidad;
-        this.servicios = new ArrayList<>();
+        this.servicios = new ArrayList<>();// Composicion
 }
 
     // Agregar servicio al profesional

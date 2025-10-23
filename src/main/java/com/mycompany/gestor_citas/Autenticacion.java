@@ -17,7 +17,7 @@ import java.util.Scanner;
  * Usa un HashMap para almacenar pares (usuario, contraseña).
  */
 public class Autenticacion {
-    private HashMap<String, String> usuarios; // Estructura clave-valor para guardar usuarios
+    private final HashMap<String, String> usuarios; // Estructura clave-valor para guardar usuarios
 
     // Constructor: inicializa con un usuario administrador por defecto
     public Autenticacion() {

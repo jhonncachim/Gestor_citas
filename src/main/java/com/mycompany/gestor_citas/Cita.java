@@ -15,11 +15,11 @@ import java.time.format.DateTimeFormatter;
  * Usa LocalDateTime para manejar fecha y hora.
  */
 public class Cita {
-    private int id; // ID único de la cita
-    private Cliente cliente;
-    private Profesional profesional;
-    private Servicio servicio;
-    private LocalDateTime fechaHora;
+    private final int id; // ID único de la cita
+    private final Cliente cliente; // Asociacion
+    private final Profesional profesional;// Asociacion
+    private final Servicio servicio;// Asociacion
+    private final LocalDateTime fechaHora;
     private boolean activa;
 
     // Formato de fecha
