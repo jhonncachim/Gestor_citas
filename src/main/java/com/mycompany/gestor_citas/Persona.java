@@ -33,7 +33,7 @@ public abstract class Persona {
     public void mostrarInfo() {
         System.out.println("ID: " + id);
         System.out.println("Nombre: " + nombre);
-        System.out.println("Teléfono: " + telefono);
+        System.out.println("Telefono: " + telefono);
         System.out.println("Correo: " + correo);
     }
 

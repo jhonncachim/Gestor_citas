@@ -27,15 +27,15 @@ public class Autenticacion {
 
     // Método para iniciar sesión
     public boolean iniciarSesion(Scanner sc) {
-        System.out.println("\n    INICIO DE SESIÓN    ");
+        System.out.println("\n---INICIO DE SESION---");
         System.out.print("Usuario: ");
         String usuario = sc.nextLine();
-        System.out.print("Contraseña: ");
+        System.out.print("Contrasena: ");
         String contrasena = sc.nextLine();
 
         // Verifica si el usuario existe y la contraseña es correcta
         if (usuarios.containsKey(usuario) && usuarios.get(usuario).equals(contrasena)) {
-            System.out.println("Inicio de sesión exitoso. ¡Bienvenido, " + usuario + "!");
+            System.out.println("Inicio de sesion exitoso. Bienvenido, " + usuario + "!");
             return true;
         } else {
             System.out.println("Usuario o contraseña incorrectos.");
@@ -45,7 +45,7 @@ public class Autenticacion {
 
     // Método para registrar un nuevo usuario
     public void registrarUsuario(Scanner sc) {
-        System.out.println("\n    REGISTRAR NUEVO USUARIO  ");
+        System.out.println("\n----REGISTRAR NUEVO USUARIO ---- ");
         System.out.print("Nuevo nombre de usuario: ");
         String usuario = sc.nextLine();
 
@@ -60,6 +60,6 @@ public class Autenticacion {
 
         // Guardamos el nuevo usuario
         usuarios.put(usuario, contrasena);
-        System.out.println(" Usuario registrado con éxito.");
+        System.out.println(" Usuario registrado con exito.");
     }
 }

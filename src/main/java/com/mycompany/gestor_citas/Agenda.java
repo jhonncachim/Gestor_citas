@@ -27,10 +27,10 @@ public class Agenda {
 
     
     // La Agenda tiene listas de objetos, pero esos objetos pueden existir fuera de la Agenda.
-    private ArrayList<Cliente> clientes;
-    private ArrayList<Profesional> profesionales;
-    private ArrayList<Servicio> servicios;
-    private ArrayList<Cita> citas;
+    private final ArrayList<Cliente> clientes;
+    private final ArrayList<Profesional> profesionales;
+    private final ArrayList<Servicio> servicios;
+    private final ArrayList<Cita> citas;
 
     // Constructor
     public Agenda() {
