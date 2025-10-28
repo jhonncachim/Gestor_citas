@@ -57,16 +57,6 @@ Cita se asocia con un Cliente, un Profesional y un Servicio.
 
 Gestor_citas utiliza Agenda, Autenticacion y GestorArchivos para la ejecución general del sistema.
 
-Tecnologías utilizadas
-
-Lenguaje de programación: Java
-
-Paradigma: Programación Orientada a Objetos
-
-Almacenamiento: Archivos de texto (formato CSV)
-
-IDE recomendado: NetBeans, IntelliJ IDEA o Visual Studio Code con soporte para Java
-
 Ejemplo básico de uso
 
 Ejecutar el programa.
