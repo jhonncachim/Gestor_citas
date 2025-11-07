@@ -41,6 +41,22 @@ public class Agenda {
         servicios = new ArrayList<>();
         citas = new ArrayList<>();
     }
+    // 🔹 Nuevo método para cancelar una cita por ID
+    public boolean cancelarCitaPorId(int id) {
+        for (Cita c : citas) {
+            if (c.getId() == id) {
+                if (!c.isActiva()) {
+                    System.out.println("⚠️ La cita ya estaba cancelada.");
+                    return false;
+                }
+                c.cancelar();
+                return true;
+            }
+        }
+        System.out.println(" No se encontró una cita con ese ID.");
+        return false;
+    }
+
 
     // Método para agregar un cliente a la Agenda (sin que dependa completamente de ella)
     public void agregarCliente(Cliente c) {
@@ -66,6 +82,7 @@ public class Agenda {
         Cita cita = new Cita(id, cliente, profesional, servicio, fechaHora);
         citas.add(cita); //  agregación (la cita se guarda en la lista de la Agenda)
         System.out.println(" Cita creada correctamente para " + cliente.getNombre());
+        GeneradorPDF.generarComprobante(cita);
     }
 
     // Métodos para buscar objetos por ID

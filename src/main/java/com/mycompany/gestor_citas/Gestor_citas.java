@@ -57,7 +57,8 @@ public class Gestor_citas {
             System.out.println("4. Crear Cita");
             System.out.println("5. Mostrar Citas");
             System.out.println("6. Mostrar Informacion General");
-            System.out.println("7. Salir");
+            System.out.println("7. Cancelar Cita");
+            System.out.println("8. Salir");
             System.out.print("Seleccione una opción: ");
 
             // Manejar error si el usuario no pone un número
@@ -213,8 +214,17 @@ public class Gestor_citas {
                     System.out.println("\n--- SERVICIOS DISPONIBLES ---");
                     for (Servicio s : agenda.getServicios()) s.mostrarServicio();
                 }
-
                 case 7 -> {
+                    System.out.print("Ingrese el ID de la cita a cancelar: ");
+                try {
+                    int id = Integer.parseInt(sc.nextLine());
+                    agenda.cancelarCitaPorId(id);
+                    } catch (NumberFormatException e) {
+                    System.out.println("Error: debe ingresar un número válido.");
+    }   
+}
+
+                case 8 -> {
                         System.out.println(" Guardando citas...");
                         GestorArchivos.guardarCitas(agenda.getCitas());
                         System.out.println(" Citas guardadas correctamente. Saliendo del sistema...");

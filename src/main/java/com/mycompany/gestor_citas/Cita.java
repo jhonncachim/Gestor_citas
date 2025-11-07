@@ -33,6 +33,11 @@ public class Cita {
         this.fechaHora = fechaHora;
         this.activa = true;
     }
+// Método para cancelar una cita (no se elimina del sistema)
+    public void cancelar() {
+        this.activa = false;
+        System.out.println(" La cita con ID " + id + " ha sido cancelada correctamente.");
+    }
 
     // Mostrar detalles de la cita
     public void mostrarCita() {
