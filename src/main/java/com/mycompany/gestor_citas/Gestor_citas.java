@@ -10,6 +10,7 @@ package com.mycompany.gestor_citas;
  * @author ASUS VIVOBOOK
 **/
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -28,9 +29,17 @@ public class Gestor_citas {
         Scanner sc = new Scanner(System.in);
         Agenda agenda = new Agenda();
         Autenticacion auth = new Autenticacion();
-        
+
+        // Cargar citas previas guardadas
         GestorArchivos.cargarCitas(agenda);
-        // 🔹 Primero, el usuario debe iniciar sesión o registrarse
+
+        // Generar reportes iniciales
+        List<Cita> citas = agenda.getCitas();
+        GeneradorReportesPDF.generarConsolidadoClientes(citas);
+        GeneradorReportesPDF.generarConsolidadoProfesionales(citas);
+        GeneradorReportesPDF.generarReporteGeneralServicios(citas);
+
+        // Sistema de acceso
         boolean acceso = false;
         while (!acceso) {
             System.out.println("\n------ SISTEMA DE ACCESO ------");
@@ -42,11 +51,11 @@ public class Gestor_citas {
             switch (opcionLogin) {
                 case "1" -> acceso = auth.iniciarSesion(sc);
                 case "2" -> auth.registrarUsuario(sc);
-                default -> System.out.println("️ Opcion no valida.");
+                default -> System.out.println("Opcion no valida.");
             }
         }
 
-        // 🔹 Menú principal (solo visible si el login fue exitoso)
+        // Menu principal
         int opcion;
 
         do {
@@ -59,20 +68,18 @@ public class Gestor_citas {
             System.out.println("6. Mostrar Informacion General");
             System.out.println("7. Cancelar Cita");
             System.out.println("8. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
 
-            // Manejar error si el usuario no pone un número
             try {
                 opcion = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("️ Opcion invalida. Intente nuevamente.");
+                System.out.println("Opcion invalida. Intente nuevamente.");
                 opcion = -1;
                 continue;
             }
 
             switch (opcion) {
-                
-                
+
                 case 1 -> { // Registrar Cliente
                     try {
                         System.out.print("ID cliente: ");
@@ -89,8 +96,12 @@ public class Gestor_citas {
 
                         System.out.println("\nCliente registrado con exito:");
                         c.mostrarCliente();
+
+                        GestorArchivos.guardarCitas(agenda.getCitas());
+                        actualizarReportes(agenda);
+
                     } catch (NumberFormatException e) {
-                        System.out.println("️ Error al registrar cliente.");
+                        System.out.println("Error al registrar cliente.");
                     }
                 }
 
@@ -110,10 +121,14 @@ public class Gestor_citas {
                         Profesional p = new Profesional(id, nombre, tel, correo, esp);
                         agenda.agregarProfesional(p);
 
-                        System.out.println("\n Profesional registrado con exito:");
+                        System.out.println("\nProfesional registrado con exito:");
                         p.mostrarProfesional();
+
+                        GestorArchivos.guardarCitas(agenda.getCitas());
+                        actualizarReportes(agenda);
+
                     } catch (NumberFormatException e) {
-                        System.out.println("️ Error al registrar profesional.");
+                        System.out.println("Error al registrar profesional.");
                     }
                 }
 
@@ -123,7 +138,7 @@ public class Gestor_citas {
                     Profesional p = agenda.buscarProfesionalPorId(idProf);
 
                     if (p == null) {
-                        System.out.println("️ Profesional no encontrado.");
+                        System.out.println("Profesional no encontrado.");
                         break;
                     }
 
@@ -141,10 +156,14 @@ public class Gestor_citas {
                         p.agregarServicio(s);
                         agenda.agregarServicio(s);
 
-                        System.out.println("\n Servicio agregado correctamente:");
+                        System.out.println("\nServicio agregado correctamente:");
                         s.mostrarServicio();
+
+                        GestorArchivos.guardarCitas(agenda.getCitas());
+                        actualizarReportes(agenda);
+
                     } catch (NumberFormatException e) {
-                        System.out.println("️ Error al agregar servicio.");
+                        System.out.println("Error al agregar servicio.");
                     }
                 }
 
@@ -161,12 +180,12 @@ public class Gestor_citas {
                         Profesional p = agenda.buscarProfesionalPorId(idProf);
 
                         if (c == null || p == null) {
-                            System.out.println("️ Cliente o profesional no encontrados.");
+                            System.out.println("Cliente o profesional no encontrados.");
                             break;
                         }
 
                         if (p.getServicios().isEmpty()) {
-                            System.out.println("️ Este profesional no tiene servicios aún.");
+                            System.out.println("Este profesional no tiene servicios aun.");
                             break;
                         }
 
@@ -178,7 +197,7 @@ public class Gestor_citas {
                         Servicio serv = agenda.buscarServicioPorId(idServ);
 
                         if (serv == null) {
-                            System.out.println("️ Servicio no encontrado.");
+                            System.out.println("Servicio no encontrado.");
                             break;
                         }
 
@@ -188,51 +207,67 @@ public class Gestor_citas {
                         System.out.print("Mes (1-12): ");
                         int mes = Integer.parseInt(sc.nextLine());
                         System.out.print("Ano (ej: 2025): ");
-                        int año = Integer.parseInt(sc.nextLine());
+                        int anio = Integer.parseInt(sc.nextLine());
                         System.out.print("Hora (0-23): ");
                         int hora = Integer.parseInt(sc.nextLine());
                         System.out.print("Minutos (0-59): ");
                         int min = Integer.parseInt(sc.nextLine());
 
-                        LocalDateTime fechaHora = LocalDateTime.of(año, mes, dia, hora, min);
+                        LocalDateTime fechaHora = LocalDateTime.of(anio, mes, dia, hora, min);
 
                         agenda.crearCita(idC, c, p, serv, fechaHora);
+
+                        GestorArchivos.guardarCitas(agenda.getCitas());
+                        actualizarReportes(agenda);
+
                     } catch (NumberFormatException e) {
-                        System.out.println("️ Error al crear cita. Revise los datos ingresados.");
+                        System.out.println("Error al crear cita. Revise los datos ingresados.");
                     }
                 }
 
                 case 5 -> agenda.mostrarCitas();
 
-                case 6 -> { // Mostrar todo
+                case 6 -> {
                     System.out.println("\n--- CLIENTES REGISTRADOS ---");
                     for (Cliente c : agenda.getClientes()) c.mostrarCliente();
 
-                    System.out.println("\n---PROFESIONALES REGISTRADOS ---");
+                    System.out.println("\n--- PROFESIONALES REGISTRADOS ---");
                     for (Profesional p : agenda.getProfesionales()) p.mostrarProfesional();
 
                     System.out.println("\n--- SERVICIOS DISPONIBLES ---");
                     for (Servicio s : agenda.getServicios()) s.mostrarServicio();
                 }
+
                 case 7 -> {
                     System.out.print("Ingrese el ID de la cita a cancelar: ");
-                try {
-                    int id = Integer.parseInt(sc.nextLine());
-                    agenda.cancelarCitaPorId(id);
+                    try {
+                        int id = Integer.parseInt(sc.nextLine());
+                        agenda.cancelarCitaPorId(id);
+                        GestorArchivos.guardarCitas(agenda.getCitas());
+                        actualizarReportes(agenda);
                     } catch (NumberFormatException e) {
-                    System.out.println("Error: debe ingresar un número válido.");
-    }   
-}
+                        System.out.println("Error: debe ingresar un numero valido.");
+                    }
+                }
 
                 case 8 -> {
-                        System.out.println(" Guardando citas...");
-                        GestorArchivos.guardarCitas(agenda.getCitas());
-                        System.out.println(" Citas guardadas correctamente. Saliendo del sistema...");
-                        System.out.println("Saliendo del sistema...");
+                    System.out.println("Guardando citas...");
+                    GestorArchivos.guardarCitas(agenda.getCitas());
+                    System.out.println("Citas guardadas correctamente. Saliendo del sistema...");
                 }
-                default -> System.out.println(" Opción no valida.");
+
+                default -> System.out.println("Opcion no valida.");
             }
 
         } while (opcion != 8);
+    }
+
+    // Metodo auxiliar para actualizar los reportes PDF
+    private static void actualizarReportes(Agenda agenda) {
+        List<Cita> citas = agenda.getCitas();
+        GeneradorReportesPDF.generarConsolidadoClientes(citas);
+        GeneradorReportesPDF.generarConsolidadoProfesionales(citas);
+        GeneradorReportesPDF.generarReporteGeneralServicios(citas);
+        System.out.println("Reportes actualizados correctamente.");
     }
 }

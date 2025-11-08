@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.gestor_citas;
+import com.itextpdf.text.pdf.PdfPCell;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -89,5 +90,9 @@ public class Cita {
             System.out.println("Error al leer cita desde CSV: " + e.getMessage());
             return null;
         }
+    }
+
+    PdfPCell getFecha() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
