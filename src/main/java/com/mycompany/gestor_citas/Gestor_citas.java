@@ -233,6 +233,6 @@ public class Gestor_citas {
                 default -> System.out.println(" Opción no valida.");
             }
 
-        } while (opcion != 7);
+        } while (opcion != 8);
     }
 }

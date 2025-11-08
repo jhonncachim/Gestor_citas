@@ -7,6 +7,8 @@ package com.mycompany.gestor_citas;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileOutputStream;
 
 /**
@@ -61,6 +63,7 @@ public class GeneradorPDF {
 
             documento.close();
             System.out.println(" PDF generado correctamente: " + nombreArchivo);
+            Desktop.getDesktop().open(new File(nombreArchivo));
 
         } catch (Exception e) {
             System.out.println(" Error al generar el PDF: " + e.getMessage());

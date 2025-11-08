@@ -23,19 +23,31 @@ import java.util.*;
  */
 public class GestorArchivos {
 
-        // Rutas de los archivos
-    
+    // Rutas de los archivos
     private static final String RUTA_CLIENTES = "clientes.csv";
     private static final String RUTA_PROFESIONALES = "profesionales.csv";
     private static final String RUTA_SERVICIOS = "servicios.csv";
     private static final String RUTA_CITAS = "citas.csv";
 
-    //  CLIENTES
+    // Metodo para cargar todos los datos al iniciar el sistema
+    public static void cargarTodo(Agenda agenda) {
+        cargarClientes(agenda);
+        cargarProfesionales(agenda);
+        cargarServicios(agenda);
+        cargarCitas(agenda);
+        System.out.println(" Todos los datos fueron cargados correctamente.");
+    }
 
-    /**
-     * Guarda todos los clientes registrados en el archivo clientes.csv
-     * @param clientes
-     */
+    // Metodo para guardar todos los datos al cerrar el sistema
+    public static void guardarTodo(Agenda agenda) {
+        guardarClientes(agenda.getClientes());
+        guardarProfesionales(agenda.getProfesionales());
+        guardarServicios(agenda.getServicios());
+        guardarCitas(agenda.getCitas());
+        System.out.println(" Todos los datos fueron guardados correctamente.");
+    }
+
+    //  CLIENTES
     public static void guardarClientes(ArrayList<Cliente> clientes) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_CLIENTES))) {
             for (Cliente c : clientes) {
@@ -48,10 +60,6 @@ public class GestorArchivos {
         }
     }
 
-    /**
-     * Carga los clientes desde clientes.csv a la agenda
-     * @param agenda
-     */
     public static void cargarClientes(Agenda agenda) {
         try (BufferedReader br = new BufferedReader(new FileReader(RUTA_CLIENTES))) {
             String linea;
@@ -76,11 +84,6 @@ public class GestorArchivos {
     }
 
     //  PROFESIONALES
-
-    /**
-     * Guarda todos los profesionales registrados en el archivo profesionales.csv
-     * @param profesionales
-     */
     public static void guardarProfesionales(ArrayList<Profesional> profesionales) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_PROFESIONALES))) {
             for (Profesional p : profesionales) {
@@ -94,10 +97,6 @@ public class GestorArchivos {
         }
     }
 
-    /**
-     * Carga los profesionales desde profesionales.csv a la agenda
-     * @param agenda
-     */
     public static void cargarProfesionales(Agenda agenda) {
         try (BufferedReader br = new BufferedReader(new FileReader(RUTA_PROFESIONALES))) {
             String linea;
@@ -123,11 +122,6 @@ public class GestorArchivos {
     }
 
     //  SERVICIOS
-
-    /**
-     * Guarda todos los servicios registrados en el archivo servicios.csv
-     * @param servicios
-     */
     public static void guardarServicios(ArrayList<Servicio> servicios) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_SERVICIOS))) {
             for (Servicio s : servicios) {
@@ -141,10 +135,6 @@ public class GestorArchivos {
         }
     }
 
-    /**
-     * Carga los servicios desde servicios.csv a la agenda
-     * @param agenda
-     */
     public static void cargarServicios(Agenda agenda) {
         try (BufferedReader br = new BufferedReader(new FileReader(RUTA_SERVICIOS))) {
             String linea;
@@ -169,11 +159,6 @@ public class GestorArchivos {
     }
 
     //  CITAS
-
-    /**
-     * Guarda todas las citas registradas en el archivo citas.csv
-     * @param citas
-     */
     public static void guardarCitas(ArrayList<Cita> citas) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(RUTA_CITAS))) {
             for (Cita c : citas) {
@@ -186,10 +171,6 @@ public class GestorArchivos {
         }
     }
 
-    /**
-     * Carga las citas desde citas.csv a la agenda
-     * @param agenda
-     */
     public static void cargarCitas(Agenda agenda) {
         try (BufferedReader br = new BufferedReader(new FileReader(RUTA_CITAS))) {
             String linea;
@@ -204,4 +185,6 @@ public class GestorArchivos {
             System.out.println(" Error al leer citas: " + e.getMessage());
         }
     }
+
+    
 }

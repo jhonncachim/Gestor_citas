@@ -5,14 +5,12 @@
 package com.mycompany.gestor_citas;
 
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 
 /**
  *
  * @author ASUS VIVOBOOK
  */  
-
 
 /**
  * Clase Agenda: gestiona todas las citas, clientes, profesionales y servicios.
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 
 public class Agenda {
 
-    
     // La Agenda tiene listas de objetos, pero esos objetos pueden existir fuera de la Agenda.
     private final ArrayList<Cliente> clientes;
     private final ArrayList<Profesional> profesionales;
@@ -34,13 +31,16 @@ public class Agenda {
 
     // Constructor
     public Agenda() {
-        
         // Aquí se crean las listas donde se almacenarán los objetos agregados.
         clientes = new ArrayList<>();
         profesionales = new ArrayList<>();
         servicios = new ArrayList<>();
         citas = new ArrayList<>();
+
+        // Cargar los datos desde los archivos CSV al iniciar el sistema
+        GestorArchivos.cargarTodo(this);
     }
+
     // 🔹 Nuevo método para cancelar una cita por ID
     public boolean cancelarCitaPorId(int id) {
         for (Cita c : citas) {
@@ -50,6 +50,7 @@ public class Agenda {
                     return false;
                 }
                 c.cancelar();
+                GestorArchivos.guardarCitas(citas);
                 return true;
             }
         }
@@ -57,22 +58,22 @@ public class Agenda {
         return false;
     }
 
-
     // Método para agregar un cliente a la Agenda (sin que dependa completamente de ella)
     public void agregarCliente(Cliente c) {
         clientes.add(c);
+        GestorArchivos.guardarClientes(clientes);
     }
 
-    
     // Agrega un profesional existente a la lista de la Agenda.
     public void agregarProfesional(Profesional p) {
         profesionales.add(p);
+        GestorArchivos.guardarProfesionales(profesionales);
     }
 
-   
     // Agrega un servicio disponible a la lista de servicios.
     public void agregarServicio(Servicio s) {
         servicios.add(s);
+        GestorArchivos.guardarServicios(servicios);
     }
 
     //  ASOCIACIÓN + AGREGACIÓN:
@@ -83,6 +84,14 @@ public class Agenda {
         citas.add(cita); //  agregación (la cita se guarda en la lista de la Agenda)
         System.out.println(" Cita creada correctamente para " + cliente.getNombre());
         GeneradorPDF.generarComprobante(cita);
+
+        // Guardar la cita en archivo
+        GestorArchivos.guardarCitas(citas);
+    }
+
+    // Método para guardar todo manualmente (por ejemplo, al salir del sistema)
+    public void guardarTodo() {
+        GestorArchivos.guardarTodo(this);
     }
 
     // Métodos para buscar objetos por ID
@@ -125,12 +134,11 @@ public class Agenda {
     public ArrayList<Servicio> getServicios() { return servicios; }
 
     public void agregarCita(Cita cita) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'agregarCita'");
+        citas.add(cita);
+        GestorArchivos.guardarCitas(citas);
     }
 
     public void listarCitas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listarCitas'");
+        mostrarCitas();
     }
 }
