@@ -2,8 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.gestor_citas;
+package com.mycompany.gestor_citas.Auxiliares;
 
+import com.mycompany.gestor_citas.Agenda;
+import com.mycompany.gestor_citas.Cita;
+import com.mycompany.gestor_citas.Cliente;
+import com.mycompany.gestor_citas.Profesional;
+import com.mycompany.gestor_citas.Servicio;
 import java.io.*;
 import java.util.*;
 

@@ -1,8 +1,9 @@
+com\mycompany\gestor_citas\Gestor_citas.class
+com\mycompany\gestor_citas\Cliente.class
 com\mycompany\gestor_citas\Agenda.class
 com\mycompany\gestor_citas\Servicio.class
 com\mycompany\gestor_citas\Profesional.class
-com\mycompany\gestor_citas\Gestor_citas.class
+com\mycompany\gestor_citas\GeneradorReportesPDF.class
+com\mycompany\gestor_citas\GestorArchivos.class
 com\mycompany\gestor_citas\Cita.class
 com\mycompany\gestor_citas\Persona.class
-com\mycompany\gestor_citas\Cliente.class
-com\mycompany\gestor_citas\GeneradorPDF.class

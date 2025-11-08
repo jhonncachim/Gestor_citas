@@ -9,19 +9,25 @@ package com.mycompany.gestor_citas;
  *
  * @author ASUS VIVOBOOK
 **/
+import com.mycompany.gestor_citas.Auxiliares.Autenticacion;
+import com.mycompany.gestor_citas.Auxiliares.GeneradorReportesPDF;
+import com.mycompany.gestor_citas.Auxiliares.GestorArchivos;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * Clase principal GestorCitas.
- * Contiene un menú interactivo por consola que gestiona:
+ * Contiene un menu interactivo por consola que gestiona:
  * - Clientes
  * - Profesionales
  * - Servicios
  * - Citas
  *
- * Ahora con manejo de errores, validaciones y menú mejorado.
+ * Ahora con manejo de errores, validaciones y menu mejorado.
  */
 public class Gestor_citas {
 
@@ -35,10 +41,15 @@ public class Gestor_citas {
 
         // Generar reportes iniciales
         List<Cita> citas = agenda.getCitas();
-        GeneradorReportesPDF.generarConsolidadoClientes(citas);
-        GeneradorReportesPDF.generarConsolidadoProfesionales(citas);
+        GeneradorReportesPDF.generarConsolidadoClientes(agenda.getClientes());
+        GeneradorReportesPDF.generarConsolidadoProfesionales(agenda.getProfesionales());
         GeneradorReportesPDF.generarReporteGeneralServicios(citas);
 
+  /**      
+        abrirPDF("Consolidado_Clientes.pdf");
+        abrirPDF("Consolidado_Profesionales.pdf");
+        abrirPDF("Reporte_General_Servicios.pdf");
+**/
         // Sistema de acceso
         boolean acceso = false;
         while (!acceso) {
@@ -262,12 +273,27 @@ public class Gestor_citas {
         } while (opcion != 8);
     }
 
-    // Metodo auxiliar para actualizar los reportes PDF
     private static void actualizarReportes(Agenda agenda) {
-        List<Cita> citas = agenda.getCitas();
-        GeneradorReportesPDF.generarConsolidadoClientes(citas);
-        GeneradorReportesPDF.generarConsolidadoProfesionales(citas);
+    List<Cita> citas = agenda.getCitas();
+
+    // Generar reportes completos usando todos los datos disponibles
+    GeneradorReportesPDF.generarConsolidadoClientes(agenda.getClientes());
+    GeneradorReportesPDF.generarConsolidadoProfesionales(agenda.getProfesionales());
+
+    if (!citas.isEmpty()) {
         GeneradorReportesPDF.generarReporteGeneralServicios(citas);
-        System.out.println("Reportes actualizados correctamente.");
+    }
+
+    System.out.println("Reportes actualizados correctamente.");
+}
+    private static void abrirPDF(String nombreArchivo) {
+        try {
+            File archivo = new File(nombreArchivo);
+            if (archivo.exists() && Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivo);
+            }
+        } catch (IOException e) {
+            System.out.println("No se pudo abrir el archivo PDF: " + nombreArchivo);
+        }
     }
 }

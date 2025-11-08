@@ -4,6 +4,8 @@
  */
 package com.mycompany.gestor_citas;
 
+import com.mycompany.gestor_citas.Auxiliares.GeneradorPDF;
+import com.mycompany.gestor_citas.Auxiliares.GestorArchivos;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
