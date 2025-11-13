@@ -1,136 +1,163 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.gestor_citas;
-
-/**
- *
- * @author ASUS VIVOBOOK
- */
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class VentanaPrinci extends javax.swing.JFrame {
-
+public class VentanaPrinci extends JFrame {
     private final JPanel panelMenu;
     private final JPanel panelContenido;
-    private final JButton btnClientes;
-    private final JButton btnProfesionales;
-    private final JButton btnCitas;
-    private final JButton btnReportes;
-    private final JButton btnCerrarSesion;
-    private JLabel lblTitulo;
+    private final JLabel lblTitulo;
+    private final Agenda agenda; // ahora se asigna correctamente desde el constructor
 
-    public VentanaPrinci() {
-        // Configuración de la ventana principal
-        setTitle("Gestor de Citas - Panel Principal");
-        setSize(1000, 600);
+    public VentanaPrinci(Agenda agenda) {
+        this.agenda = agenda; // ✅ CORRECCIÓN: se usa la instancia recibida
+        setTitle("Gestor de Citas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1200, 700);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        setResizable(false);
+        setUndecorated(false);
 
-        // --- PANEL LATERAL (Menú) ---
-        panelMenu = new JPanel();
-        panelMenu.setBackground(new Color(46, 125, 50)); // Verde principal
-        panelMenu.setLayout(new GridLayout(6, 1, 0, 10));
-        panelMenu.setPreferredSize(new Dimension(220, 0));
-        panelMenu.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
+        // ===== PANEL SUPERIOR =====
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.setBackground(Color.WHITE);
+        panelSuperior.setPreferredSize(new Dimension(1200, 70));
 
-        // --- BOTONES DEL MENÚ ---
-        btnClientes = crearBotonMenu("Clientes");
-        btnProfesionales = crearBotonMenu("Profesionales");
-        btnCitas = crearBotonMenu("Citas");
-        btnReportes = crearBotonMenu("Reportes");
-        btnCerrarSesion = crearBotonMenu("Cerrar Sesión");
+        lblTitulo = new JLabel("GESTOR DE CITAS", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(30, 30, 60));
+        panelSuperior.add(lblTitulo, BorderLayout.CENTER);
+        add(panelSuperior, BorderLayout.NORTH);
 
-        // Añadir botones al menú
+        // ===== PANEL LATERAL =====
+        panelMenu = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(
+                        0, 0, new Color(25, 40, 80),
+                        0, getHeight(), new Color(60, 140, 255)
+                );
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panelMenu.setLayout(new GridLayout(7, 1, 0, 15));
+        panelMenu.setPreferredSize(new Dimension(250, 0));
+        panelMenu.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
+
+        // ===== BOTONES =====
+        JButton btnInicio = crearBoton("  Inicio");
+        JButton btnClientes = crearBoton("  Clientes");
+        JButton btnProfesionales = crearBoton(" Profesionales");
+        JButton btnServicios = crearBoton("  Servicios");
+        JButton btnCitas = crearBoton("  Citas");
+        JButton btnReportes = crearBoton(" Reportes");
+        JButton btnSalir = crearBoton(" Cerrar Sesión");
+
+        panelMenu.add(btnInicio);
         panelMenu.add(btnClientes);
         panelMenu.add(btnProfesionales);
+        panelMenu.add(btnServicios);
         panelMenu.add(btnCitas);
         panelMenu.add(btnReportes);
-        panelMenu.add(new JLabel()); // Espacio
-        panelMenu.add(btnCerrarSesion);
-
+        panelMenu.add(btnSalir);
         add(panelMenu, BorderLayout.WEST);
 
-        // --- PANEL DE CONTENIDO CENTRAL ---
+        // ===== PANEL CENTRAL =====
         panelContenido = new JPanel();
-        panelContenido.setBackground(new Color(245, 245, 245));
-        panelContenido.setLayout(new BorderLayout());
-
-        lblTitulo = new JLabel("Bienvenido al Gestor de Citas", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        lblTitulo.setForeground(new Color(46, 125, 50));
-        lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        panelContenido.add(lblTitulo, BorderLayout.NORTH);
-
-        JLabel lblMensaje = new JLabel("Selecciona una opción del menú para comenzar", SwingConstants.CENTER);
-        lblMensaje.setFont(new Font("Arial", Font.PLAIN, 16));
-        panelContenido.add(lblMensaje, BorderLayout.CENTER);
-
+        panelContenido.setBackground(new Color(240, 242, 245));
+        panelContenido.setLayout(new GridBagLayout());
+        mostrarInicio();
         add(panelContenido, BorderLayout.CENTER);
 
-        // --- EVENTOS DE LOS BOTONES ---
-        btnClientes.addActionListener(e -> mostrarSeccion("Gestión de Clientes"));
-        btnProfesionales.addActionListener(e -> mostrarSeccion("Gestión de Profesionales"));
-        btnCitas.addActionListener(e -> mostrarSeccion("Agenda de Citas"));
-        btnReportes.addActionListener(e -> mostrarSeccion("Reportes Generales"));
-
-        btnCerrarSesion.addActionListener(e -> {
-            int opcion = JOptionPane.showConfirmDialog(this,
-                    "¿Deseas cerrar sesión?",
-                    "Cerrar Sesión",
-                    JOptionPane.YES_NO_OPTION);
-            if (opcion == JOptionPane.YES_OPTION) {
+        // ===== EVENTOS =====
+        btnInicio.addActionListener(e -> mostrarInicio());
+        btnClientes.addActionListener(e -> new VentanaClientes(agenda).setVisible(true));
+        btnProfesionales.addActionListener(e -> new VentanaProfesionales(agenda).setVisible(true));
+        btnServicios.addActionListener(e -> new VentanaServicios(agenda).setVisible(true));
+        btnCitas.addActionListener(e -> new VentanaCitas(agenda).setVisible(true));
+        btnReportes.addActionListener(e -> JOptionPane.showMessageDialog(this,
+                "Generando reportes PDF...\n(Revisar carpeta del proyecto)",
+                "Reportes", JOptionPane.INFORMATION_MESSAGE));
+        btnSalir.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
                 dispose();
-                new LoginForm().setVisible(true);
+                new com.mycompany.gestor_citas.LoginForm().setVisible(true);
             }
         });
+
+        setVisible(true);
     }
 
-    private JButton crearBotonMenu(String texto) {
+    // ===== BOTONES CON EFECTO HOVER ELEGANTE =====
+    private JButton crearBoton(String texto) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Arial", Font.BOLD, 15));
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 16));
         boton.setForeground(Color.WHITE);
-        boton.setBackground(new Color(56, 142, 60));
         boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        boton.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setContentAreaFilled(false);
+        boton.setOpaque(false);
 
-        // Efecto hover
         boton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                boton.setBackground(new Color(67, 160, 71));
+                boton.setBackground(new Color(255, 255, 255, 40));
+                boton.setOpaque(true);
+                boton.setForeground(Color.WHITE);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                boton.setBackground(new Color(56, 142, 60));
+                boton.setOpaque(false);
+                boton.setForeground(Color.WHITE);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                boton.setBackground(new Color(200, 220, 255, 100));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                boton.setBackground(new Color(255, 255, 255, 60));
             }
         });
 
         return boton;
     }
 
-    private void mostrarSeccion(String titulo) {
+    // ===== CONTENIDO DE INICIO =====
+    private void mostrarInicio() {
         panelContenido.removeAll();
 
-        lblTitulo = new JLabel(titulo, SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        lblTitulo.setForeground(new Color(46, 125, 50));
-        lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        panelContenido.add(lblTitulo, BorderLayout.NORTH);
+        JPanel card = new JPanel();
+        card.setPreferredSize(new Dimension(700, 400));
+        card.setBackground(Color.WHITE);
+        card.setLayout(new BorderLayout());
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                BorderFactory.createEmptyBorder(40, 40, 40, 40)
+        ));
 
-        JLabel lblMensaje = new JLabel("Aquí irá el contenido de: " + titulo, SwingConstants.CENTER);
-        lblMensaje.setFont(new Font("Arial", Font.PLAIN, 16));
-        panelContenido.add(lblMensaje, BorderLayout.CENTER);
+        JLabel titulo = new JLabel(" Bienvenido al Gestor de Citas ", SwingConstants.CENTER);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        titulo.setForeground(new Color(30, 30, 90));
 
+        JLabel subtitulo = new JLabel("<html><div style='text-align:center;'>Administra clientes, profesionales, servicios y citas.<br>Selecciona una opción en el menú lateral para comenzar.</div></html>", SwingConstants.CENTER);
+        subtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        subtitulo.setForeground(new Color(90, 90, 90));
+
+        card.add(titulo, BorderLayout.NORTH);
+        card.add(subtitulo, BorderLayout.CENTER);
+
+        panelContenido.add(card, new GridBagConstraints());
         panelContenido.revalidate();
         panelContenido.repaint();
     }

@@ -44,6 +44,12 @@ public class Agenda {
     }
 
     // 🔹 Nuevo método para cancelar una cita por ID
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     public boolean cancelarCitaPorId(int id) {
         for (Cita c : citas) {
             if (c.getId() == id) {
@@ -143,4 +149,32 @@ public class Agenda {
     public void listarCitas() {
         mostrarCitas();
     }
+
+    // MÉTODOS PARA OBTENER PRÓXIMO ID (si la lista está vacía devuelve 1)
+    public int obtenerProximoIdCliente() {
+        int max = 0;
+        for (Cliente c : clientes) if (c.getId() > max) max = c.getId();
+        return max + 1;
+    }
+
+    public int obtenerProximoIdProfesional() {
+        int max = 0;
+        for (Profesional p : profesionales) if (p.getId() > max) max = p.getId();
+        return max + 1;
+    }
+
+    public int obtenerProximoIdServicio() {
+        int max = 0;
+        for (Servicio s : servicios) if (s.getId() > max) max = s.getId();
+        return max + 1;
+    }
+
+    public int obtenerProximoIdCita() {
+        int max = 0;
+        for (Cita c : citas) if (c.getId() > max) max = c.getId();
+        return max + 1;
+    }
+
+    // Cancelar cita por id (ya tenías, conservalo)
+   
 }

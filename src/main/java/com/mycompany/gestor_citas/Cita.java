@@ -3,29 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.gestor_citas;
+
 import com.itextpdf.text.pdf.PdfPCell;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- *
- * @author ASUS VIVOBOOK
- */
-/**
  * Clase Cita: representa una cita entre un Cliente y un Profesional.
  * Usa LocalDateTime para manejar fecha y hora.
  */
 public class Cita {
-    private final int id; // ID único de la cita
-    private final Cliente cliente; // Asociacion
-    private final Profesional profesional;// Asociacion
-    private final Servicio servicio;// Asociacion
+    private final int id;
+    private final Cliente cliente;
+    private final Profesional profesional;
+    private final Servicio servicio;
     private final LocalDateTime fechaHora;
     private boolean activa;
 
-    // Formato de fecha
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    // Constructor principal (usado por el sistema)
     public Cita(int id, Cliente cliente, Profesional profesional, Servicio servicio, LocalDateTime fechaHora) {
         this.id = id;
         this.cliente = cliente;
@@ -34,13 +31,22 @@ public class Cita {
         this.fechaHora = fechaHora;
         this.activa = true;
     }
-// Método para cancelar una cita (no se elimina del sistema)
-    public void cancelar() {
-        this.activa = false;
-        System.out.println(" La cita con ID " + id + " ha sido cancelada correctamente.");
+
+    // ✅ Constructor adicional (para interfaz VentanaCitas)
+    public Cita(int id, String cliente, String profesional, String servicio, String fecha) {
+        this.id = id;
+        this.cliente = new Cliente(0, cliente, "", "");
+        this.profesional = new Profesional(0, profesional, "", "", "");
+        this.servicio = new Servicio(0, servicio, 0,0.0);
+        this.fechaHora = LocalDateTime.now();
+        this.activa = true;
     }
 
-    // Mostrar detalles de la cita
+    public void cancelar() {
+        this.activa = false;
+        System.out.println("La cita con ID " + id + " ha sido cancelada correctamente.");
+    }
+
     public void mostrarCita() {
         System.out.println("=== Detalle de la Cita ===");
         System.out.println("ID Cita: " + id);
@@ -52,7 +58,7 @@ public class Cita {
         System.out.println("--------------------------");
     }
 
-    // Getters y Setters
+    // Getters
     public int getId() { return id; }
     public Cliente getCliente() { return cliente; }
     public Profesional getProfesional() { return profesional; }
@@ -62,13 +68,12 @@ public class Cita {
 
     public void cancelarCita() { this.activa = false; }
 
-    // Convertir a texto CSV
+    // CSV
     public String toCSV() {
         return id + ";" + cliente.getId() + ";" + profesional.getId() + ";" + servicio.getId() + ";" +
                fechaHora.format(FORMATO) + ";" + activa;
     }
 
-    // Leer desde CSV
     public static Cita fromCSV(String linea, Agenda agenda) {
         try {
             String[] datos = linea.split(";");
@@ -93,6 +98,6 @@ public class Cita {
     }
 
     PdfPCell getFecha() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

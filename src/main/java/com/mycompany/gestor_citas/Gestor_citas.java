@@ -129,7 +129,7 @@ public class Gestor_citas {
                         System.out.print("Especialidad (barbero, medico, etc.): ");
                         String esp = sc.nextLine();
 
-                        Profesional p = new Profesional(id, nombre, tel, correo, esp);
+                        Profesional p = new Profesional(id, nombre, esp, tel, correo);
                         agenda.agregarProfesional(p);
 
                         System.out.println("\nProfesional registrado con exito:");
@@ -163,7 +163,7 @@ public class Gestor_citas {
                         System.out.print("Precio ($): ");
                         double precio = Double.parseDouble(sc.nextLine());
 
-                        Servicio s = new Servicio(idS, nomS, dur, precio);
+                        Servicio s = new Servicio(idS, nomS, (int) precio, dur);
                         p.agregarServicio(s);
                         agenda.agregarServicio(s);
 

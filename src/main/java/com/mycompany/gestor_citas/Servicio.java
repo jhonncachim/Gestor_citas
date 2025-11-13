@@ -18,7 +18,7 @@ public class Servicio {
     private int duracion; // en minutos
     private double precio;
 
-    public Servicio(int id, String nombre, int duracion, double precio) {
+    public Servicio(int id, String nombre,int duracion, double precio) {
         this.id = id;
         this.nombre = nombre;
         this.duracion = duracion;

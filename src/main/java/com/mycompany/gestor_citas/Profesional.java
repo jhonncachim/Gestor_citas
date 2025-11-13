@@ -18,11 +18,19 @@ public class Profesional extends Persona { // herencia
     private String especialidad; 
     private final ArrayList<Servicio> servicios; // Composicion
 
+    // Constructor principal
     public Profesional(int id, String nombre, String telefono, String correo, String especialidad) {
         super(id, nombre, telefono, correo);
         this.especialidad = especialidad;
         this.servicios = new ArrayList<>();// Composicion
-}
+    }
+
+    // ✅ Constructor adicional sin ID (para ventanas o creación rápida)
+    public Profesional(String nombre, String telefono, String correo, String especialidad) {
+        super(0, nombre, telefono, correo);
+        this.especialidad = especialidad;
+        this.servicios = new ArrayList<>();
+    }
 
     // Agregar servicio al profesional
     public void agregarServicio(Servicio servicio) {

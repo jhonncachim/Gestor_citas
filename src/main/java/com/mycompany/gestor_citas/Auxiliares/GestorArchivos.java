@@ -109,12 +109,14 @@ public class GestorArchivos {
                 String[] partes = linea.split(";");
                 if (partes.length == 5) {
                     Profesional p = new Profesional(
-                        Integer.parseInt(partes[0]),
-                        partes[1],
-                        partes[2],
-                        partes[3],
-                        partes[4]
-                    );
+                            
+                     Integer.parseInt(partes[0]),  // ID
+                        partes[1],                    // Nombre
+                        partes[2],                    // Especialidad
+                        partes[3],                    // Teléfono
+                        partes[4]                     // Correo
+);
+                   
                     agenda.getProfesionales().add(p);
                 }
             }
@@ -147,11 +149,12 @@ public class GestorArchivos {
                 String[] partes = linea.split(";");
                 if (partes.length == 4) {
                     Servicio s = new Servicio(
-                        Integer.parseInt(partes[0]),
-                        partes[1],
-                        Integer.parseInt(partes[2]),
-                        Double.parseDouble(partes[3])
-                    );
+    Integer.parseInt(partes[0]),   // id
+    partes[1],                     // nombre
+    Integer.parseInt(partes[2]),   // duracion
+    Double.parseDouble(partes[3])  // precio
+);
+
                     agenda.getServicios().add(s);
                 }
             }
