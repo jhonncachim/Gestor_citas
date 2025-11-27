@@ -26,7 +26,7 @@ public class VentanaProfesionales extends javax.swing.JFrame {
         this.agenda = agenda;
 
         // Ventana básica
-        setTitle("Gestor de Citas - Profesionales");
+        setTitle("ReservaPro - Profesionales");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);

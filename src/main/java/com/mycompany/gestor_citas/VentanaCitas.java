@@ -21,15 +21,13 @@ public class VentanaCitas extends javax.swing.JFrame {
 
     public VentanaCitas(Agenda agenda) {
         this.agenda = agenda;
-        setTitle("Gestor de Citas");
+        setTitle("ReservaPro");
         setSize(920, 540);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10,10));
 
-        // -----------------------------
         // PANEL SUPERIOR: LOGO + TÍTULO
-        // -----------------------------
         JLabel titulo = new JLabel("ReservaPro", SwingConstants.CENTER);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titulo.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
@@ -49,9 +47,7 @@ public class VentanaCitas extends javax.swing.JFrame {
 
         add(header, BorderLayout.NORTH);
 
-        // -----------------------------
         // FORMULARIO IZQUIERDO
-        // -----------------------------
         JPanel form = new JPanel(new GridLayout(8, 2, 8, 8));
         form.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -76,9 +72,7 @@ public class VentanaCitas extends javax.swing.JFrame {
 
         add(form, BorderLayout.WEST);
 
-        // -----------------------------
         // BOTONES
-        // -----------------------------
         JButton btnRegistrar = new JButton("Registrar Cita");
         JButton btnEliminar = new JButton("Eliminar Cita");
         JButton btnAtender = new JButton("Marcar como atendida");
@@ -92,9 +86,7 @@ public class VentanaCitas extends javax.swing.JFrame {
 
         add(botones, BorderLayout.SOUTH);
 
-        // -----------------------------
         // TABLA
-        // -----------------------------
         modelo = new DefaultTableModel(new Object[]{"ID","Cliente","Profesional","Servicio","Fecha y hora","Estado"},0) {
             @Override public boolean isCellEditable(int r,int c){return false;}
         };
@@ -102,9 +94,7 @@ public class VentanaCitas extends javax.swing.JFrame {
         tabla.setRowHeight(26);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // -----------------------------
         // EVENTOS
-        // -----------------------------
         refreshCombos();
         refreshTabla();
 
@@ -151,9 +141,7 @@ public class VentanaCitas extends javax.swing.JFrame {
         setVisible(true);
     }
 
-    // --------------------------------------------------------------
     // MÉTODOS
-    // --------------------------------------------------------------
     private void refreshCombos() {
         cbCliente.removeAllItems();
         for (Cliente c : agenda.getClientes())
