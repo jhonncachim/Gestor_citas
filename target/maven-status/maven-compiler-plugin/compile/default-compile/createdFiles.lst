@@ -5,6 +5,7 @@ com\mycompany\gestor_citas\Auxiliares\GestorArchivos.class
 com\mycompany\gestor_citas\Cita.class
 com\mycompany\gestor_citas\VentanaPrinci.class
 com\mycompany\gestor_citas\VentanaServicios$1.class
+com\mycompany\gestor_citas\VentanaPrinci$3.class
 com\mycompany\gestor_citas\Gestor_citas.class
 com\mycompany\gestor_citas\Cliente.class
 com\mycompany\gestor_citas\Auxiliares\GeneradorReportesPDF.class
@@ -16,3 +17,4 @@ com\mycompany\gestor_citas\Persona.class
 com\mycompany\gestor_citas\VentanaPrinci$2.class
 com\mycompany\gestor_citas\VentanaCitas$2.class
 com\mycompany\gestor_citas\VentanaProfesionales$1.class
+com\mycompany\gestor_citas\VentanaPrinci$RoundedBorder.class

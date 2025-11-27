@@ -2,16 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+// Cita.java
 package com.mycompany.gestor_citas;
 
 import com.itextpdf.text.pdf.PdfPCell;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Clase Cita: representa una cita entre un Cliente y un Profesional.
- * Usa LocalDateTime para manejar fecha y hora.
- */
+/*
+  Clase Cita:
+  - Representa una cita entre un cliente y un profesional por un servicio.
+  - Mantiene fecha/hora (LocalDateTime), estado (activa/atendida).
+  - Incluye métodos para cancelar, marcar atendida, mostrar por consola y serializar a CSV.
+*/
 public class Cita {
     private final int id;
     private final Cliente cliente;
@@ -23,7 +26,7 @@ public class Cita {
 
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    // Constructor principal (usado por el sistema)
+    // Constructor principal (usa objetos completos)
     public Cita(int id, Cliente cliente, Profesional profesional, Servicio servicio, LocalDateTime fechaHora) {
         this.id = id;
         this.cliente = cliente;
@@ -33,7 +36,8 @@ public class Cita {
         this.activa = true;
     }
 
-    // ✅ Constructor adicional (para interfaz VentanaCitas)
+    // Constructor alternativo (útil solo para pruebas o interfaces que pasen strings)
+    // Crea objetos mínimos para cliente/profesional/servicio.
     public Cita(int id, String cliente, String profesional, String servicio, String fecha) {
         this.id = id;
         this.cliente = new Cliente(0, cliente, "", "");
@@ -44,17 +48,23 @@ public class Cita {
         this.atendida = false;
     }
 
+    // Marca la cita como cancelada (activa = false)
     public void cancelar() {
         this.activa = false;
         System.out.println("La cita con ID " + id + " ha sido cancelada correctamente.");
     }
 
+    // Indica si ya fue atendida
     public boolean isAtendida() {
-    return atendida;
-}
+        return atendida;
+    }
+
+    // Marca la cita como atendida
     public void marcarAtendida() {
-    this.atendida = true;
-}
+        this.atendida = true;
+    }
+
+    // Imprime en consola los datos principales (útil para debug)
     public void mostrarCita() {
         System.out.println("=== Detalle de la Cita ===");
         System.out.println("ID Cita: " + id);
@@ -66,7 +76,7 @@ public class Cita {
         System.out.println("--------------------------");
     }
 
-    // Getters
+    // Getters básicos usados en paneles y reportes
     public int getId() { return id; }
     public Cliente getCliente() { return cliente; }
     public Profesional getProfesional() { return profesional; }
@@ -74,14 +84,16 @@ public class Cita {
     public LocalDateTime getFechaHora() { return fechaHora; }
     public boolean isActiva() { return activa; }
 
+    // Cancela cita (alias)
     public void cancelarCita() { this.activa = false; }
 
-    // CSV
+    // Serializa la cita a una línea CSV para guardar en archivo
     public String toCSV() {
         return id + ";" + cliente.getId() + ";" + profesional.getId() + ";" + servicio.getId() + ";" +
                fechaHora.format(FORMATO) + ";" + activa;
     }
 
+    // Crea una Cita desde una línea CSV (lee ids y busca objetos en agenda)
     public static Cita fromCSV(String linea, Agenda agenda) {
         try {
             String[] datos = linea.split(";");
@@ -105,6 +117,7 @@ public class Cita {
         }
     }
 
+    // Método placeholder (no implementado) — puede eliminarse o implementarse si se necesita en PDFs
     PdfPCell getFecha() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

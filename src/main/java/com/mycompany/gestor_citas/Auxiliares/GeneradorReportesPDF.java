@@ -11,6 +11,7 @@ import com.mycompany.gestor_citas.Cita;
 import com.mycompany.gestor_citas.Cliente;
 import com.mycompany.gestor_citas.Profesional;
 import com.mycompany.gestor_citas.Servicio;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -18,18 +19,42 @@ import java.util.List;
 public class GeneradorReportesPDF {
 
     // ===================== LOGO ======================
-    private static final String RUTA_LOGO = "C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png";
+    private static final String RUTA_LOGO =
+            "C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png";
 
     private static Image cargarLogo() {
         try {
             Image img = Image.getInstance(RUTA_LOGO);
-            img.scaleToFit(100, 100);
+            img.scaleToFit(90, 90);
             img.setAlignment(Element.ALIGN_LEFT);
             return img;
         } catch (Exception e) {
             System.out.println("⚠ No se pudo cargar el logo.");
             return null;
         }
+    }
+
+    private static Paragraph tituloCentrado(String texto) {
+        Paragraph p = new Paragraph(texto,
+                new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD));
+        p.setAlignment(Element.ALIGN_CENTER);
+        p.setSpacingAfter(15);
+        return p;
+    }
+
+    private static PdfPCell celdaHeader(String txt) {
+        PdfPCell c = new PdfPCell(new Phrase(txt,
+                new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE)));
+        c.setBackgroundColor(new BaseColor(40, 80, 150));
+        c.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c.setPadding(6);
+        return c;
+    }
+
+    private static PdfPCell celdaNormal(String txt) {
+        PdfPCell c = new PdfPCell(new Phrase(txt));
+        c.setHorizontalAlignment(Element.ALIGN_CENTER);
+        return c;
     }
 
     // ============================================================
@@ -48,26 +73,21 @@ public class GeneradorReportesPDF {
             PdfWriter.getInstance(doc, new FileOutputStream(ruta));
             doc.open();
 
-            // ========== ENCABEZADO ==========
+            // ENCABEZADO
             PdfPTable header = new PdfPTable(2);
             header.setWidthPercentage(100);
             header.setWidths(new float[]{1.2f, 2f});
 
-            // Logo
             Image logo = cargarLogo();
             if (logo != null) {
-                PdfPCell logoCell = new PdfPCell(logo);
-                logoCell.setBorder(Rectangle.NO_BORDER);
-                logoCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-                header.addCell(logoCell);
-            } else {
-                header.addCell("");
-            }
+                PdfPCell logoCelda = new PdfPCell(logo);
+                logoCelda.setBorder(Rectangle.NO_BORDER);
+                header.addCell(logoCelda);
+            } else header.addCell("");
 
-            // Información del negocio
             PdfPCell infoNegocio = new PdfPCell();
             infoNegocio.setBorder(Rectangle.NO_BORDER);
-            infoNegocio.addElement(new Paragraph("GESTOR DE CITAS",
+            infoNegocio.addElement(new Paragraph("ReservaPro",
                     new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD)));
             infoNegocio.addElement(new Paragraph("Dirección: --"));
             infoNegocio.addElement(new Paragraph("Teléfono: --"));
@@ -77,24 +97,18 @@ public class GeneradorReportesPDF {
             doc.add(header);
             doc.add(new Paragraph("\n"));
 
-            // ========== TÍTULO ==========
-            Paragraph titulo = new Paragraph("FACTURA",
-                    new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(10);
-            doc.add(titulo);
-
+            // TITULO
+            doc.add(tituloCentrado("FACTURA"));
             doc.add(new LineSeparator());
             doc.add(new Paragraph("\n"));
 
-            // ========== INFORMACIÓN DEL CLIENTE / FACTURA ==========
+            // INFO CLIENTE
             PdfPTable info = new PdfPTable(2);
             info.setWidthPercentage(100);
-            info.setWidths(new float[]{1f, 1f});
 
             PdfPCell cliente = new PdfPCell();
             cliente.setBorder(Rectangle.NO_BORDER);
-            cliente.addElement(new Paragraph("FACTURA ENTREGADA A:",
+            cliente.addElement(new Paragraph("Cliente:",
                     new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
             cliente.addElement(new Paragraph(factura.getCliente().getNombre()));
             cliente.addElement(new Paragraph("Tel: " + factura.getCliente().getTelefono()));
@@ -102,60 +116,50 @@ public class GeneradorReportesPDF {
             PdfPCell datosFactura = new PdfPCell();
             datosFactura.setBorder(Rectangle.NO_BORDER);
             datosFactura.addElement(new Paragraph("N° Factura: " + factura.getId()));
-            datosFactura.addElement(new Paragraph("Fecha emisión: " + java.time.LocalDate.now()));
+            datosFactura.addElement(new Paragraph("Fecha: " + java.time.LocalDate.now()));
             datosFactura.addElement(new Paragraph("Profesional: " + factura.getProfesional().getNombre()));
 
             info.addCell(cliente);
             info.addCell(datosFactura);
-
             doc.add(info);
             doc.add(new Paragraph("\n"));
 
-            // ========== TABLA PRINCIPAL ==========
+            // TABLA PRINCIPAL
             PdfPTable tabla = new PdfPTable(4);
             tabla.setWidthPercentage(100);
             tabla.setWidths(new float[]{2.5f, 1f, 1f, 1f});
 
-            tabla.addCell(encabezado("Descripción"));
-            tabla.addCell(encabezado("Cantidad"));
-            tabla.addCell(encabezado("Precio"));
-            tabla.addCell(encabezado("Importe"));
+            tabla.addCell(celdaHeader("Descripción"));
+            tabla.addCell(celdaHeader("Cantidad"));
+            tabla.addCell(celdaHeader("Precio"));
+            tabla.addCell(celdaHeader("Importe"));
 
-            tabla.addCell(factura.getServicio().getNombre());
-            tabla.addCell("1");
-            tabla.addCell("$ " + factura.getPrecio());
-            tabla.addCell("$ " + factura.getTotal());
+            tabla.addCell(celdaNormal(factura.getServicio().getNombre()));
+            tabla.addCell(celdaNormal("1"));
+            tabla.addCell(celdaNormal("$ " + factura.getPrecio()));
+            tabla.addCell(celdaNormal("$ " + factura.getTotal()));
 
             doc.add(tabla);
             doc.add(new Paragraph("\n"));
 
-            // ========== TOTALES ==========
+            // TOTALES
             PdfPTable totales = new PdfPTable(2);
             totales.setWidthPercentage(40);
             totales.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            totales.addCell(noBorde("Subtotal:"));
-            totales.addCell(noBorde("$ " + factura.getPrecio()));
-
             double iva = factura.getTotal() * 0.19;
 
+            totales.addCell(noBorde("Subtotal:"));
+            totales.addCell(noBorde("$ " + factura.getPrecio()));
             totales.addCell(noBorde("IVA (19%):"));
             totales.addCell(noBorde("$ " + iva));
-
-            totales.addCell(noBorde("TOTAL A PAGAR:", true));
+            totales.addCell(noBorde("TOTAL:", true));
             totales.addCell(noBorde("$ " + factura.getTotal(), true));
 
             doc.add(totales);
 
             doc.add(new Paragraph("\n\n"));
-
-            // ========== FIRMA ==========
-            Paragraph firma = new Paragraph(
-                    "Firma del profesional:\n\n______________________________",
-                    new Font(Font.FontFamily.HELVETICA, 11)
-            );
-            firma.setAlignment(Element.ALIGN_LEFT);
-            doc.add(firma);
+            doc.add(new Paragraph("Firma del profesional:\n\n________________________"));
 
             doc.close();
             System.out.println("Factura creada → " + ruta);
@@ -165,21 +169,9 @@ public class GeneradorReportesPDF {
         }
     }
 
-    // ================= UTILIDADES PARA TABLA DE FACTURA ==================
-
-    private static PdfPCell encabezado(String text) {
-        PdfPCell c = new PdfPCell(new Phrase(text,
-                new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
-        c.setBackgroundColor(BaseColor.LIGHT_GRAY);
-        c.setHorizontalAlignment(Element.ALIGN_CENTER);
-        c.setPadding(5);
-        return c;
-    }
-
     private static PdfPCell noBorde(String txt) {
         PdfPCell c = new PdfPCell(new Phrase(txt));
         c.setBorder(Rectangle.NO_BORDER);
-        c.setHorizontalAlignment(Element.ALIGN_RIGHT);
         return c;
     }
 
@@ -190,17 +182,13 @@ public class GeneradorReportesPDF {
 
         PdfPCell c = new PdfPCell(new Phrase(txt, f));
         c.setBorder(Rectangle.NO_BORDER);
-        c.setHorizontalAlignment(Element.ALIGN_RIGHT);
         return c;
     }
 
-    // =====================================================================
-    // ===================== 2. CONSOLIDADO CLIENTES ========================
-    // =====================================================================
+    // ================== 2. CONSOLIDADO CLIENTES ====================
 
     public static void generarConsolidadoClientes(List<Cliente> clientes) {
         try {
-
             File carpeta = new File("Reportes");
             if (!carpeta.exists()) carpeta.mkdir();
 
@@ -211,40 +199,31 @@ public class GeneradorReportesPDF {
             Image logo = cargarLogo();
             if (logo != null) doc.add(logo);
 
-            Paragraph titulo = new Paragraph("CONSOLIDADO DE CLIENTES",
-                    new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(20);
-            doc.add(titulo);
+            doc.add(tituloCentrado("CONSOLIDADO DE CLIENTES"));
 
             PdfPTable tabla = new PdfPTable(3);
             tabla.setWidthPercentage(100);
 
-            tabla.addCell("ID");
-            tabla.addCell("Nombre");
-            tabla.addCell("Teléfono");
+            tabla.addCell(celdaHeader("ID"));
+            tabla.addCell(celdaHeader("Nombre"));
+            tabla.addCell(celdaHeader("Teléfono"));
 
-            for (Cliente x : clientes) {
-                tabla.addCell(String.valueOf(x.getId()));
-                tabla.addCell(x.getNombre());
-                tabla.addCell(x.getTelefono());
+            for (Cliente c : clientes) {
+                tabla.addCell(celdaNormal(String.valueOf(c.getId())));
+                tabla.addCell(celdaNormal(c.getNombre()));
+                tabla.addCell(celdaNormal(c.getTelefono()));
             }
 
             doc.add(tabla);
             doc.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // =====================================================================
-    // ================== 3. CONSOLIDADO PROFESIONALES =====================
-    // =====================================================================
+    // ================= CONSOLIDADO PROFESIONALES ===================
 
     public static void generarConsolidadoProfesionales(List<Profesional> profesionales) {
         try {
-
             File carpeta = new File("Reportes");
             if (!carpeta.exists()) carpeta.mkdir();
 
@@ -255,40 +234,31 @@ public class GeneradorReportesPDF {
             Image logo = cargarLogo();
             if (logo != null) doc.add(logo);
 
-            Paragraph titulo = new Paragraph("CONSOLIDADO DE PROFESIONALES",
-                    new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(20);
-            doc.add(titulo);
+            doc.add(tituloCentrado("CONSOLIDADO DE PROFESIONALES"));
 
             PdfPTable tabla = new PdfPTable(3);
             tabla.setWidthPercentage(100);
 
-            tabla.addCell("ID");
-            tabla.addCell("Nombre");
-            tabla.addCell("Especialidad");
+            tabla.addCell(celdaHeader("ID"));
+            tabla.addCell(celdaHeader("Nombre"));
+            tabla.addCell(celdaHeader("Especialidad"));
 
             for (Profesional p : profesionales) {
-                tabla.addCell(String.valueOf(p.getId()));
-                tabla.addCell(p.getNombre());
-                tabla.addCell(p.getEspecialidad());
+                tabla.addCell(celdaNormal(String.valueOf(p.getId())));
+                tabla.addCell(celdaNormal(p.getNombre()));
+                tabla.addCell(celdaNormal(p.getEspecialidad()));
             }
 
             doc.add(tabla);
             doc.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // =====================================================================
-    // ===================== 4. REPORTE DE SERVICIOS ========================
-    // =====================================================================
+    // =================== REPORTE GENERAL SERVICIOS =================
 
     public static void generarReporteGeneralServicios(List<Servicio> servicios) {
         try {
-
             File carpeta = new File("Reportes");
             if (!carpeta.exists()) carpeta.mkdir();
 
@@ -299,36 +269,28 @@ public class GeneradorReportesPDF {
             Image logo = cargarLogo();
             if (logo != null) doc.add(logo);
 
-            Paragraph titulo = new Paragraph("REPORTE GENERAL DE SERVICIOS",
-                    new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(20);
-            doc.add(titulo);
+            doc.add(tituloCentrado("REPORTE DE SERVICIOS"));
 
             PdfPTable tabla = new PdfPTable(3);
             tabla.setWidthPercentage(100);
 
-            tabla.addCell("ID");
-            tabla.addCell("Nombre");
-            tabla.addCell("Precio");
+            tabla.addCell(celdaHeader("ID"));
+            tabla.addCell(celdaHeader("Servicio"));
+            tabla.addCell(celdaHeader("Precio"));
 
             for (Servicio s : servicios) {
-                tabla.addCell(String.valueOf(s.getId()));
-                tabla.addCell(s.getNombre());
-                tabla.addCell(String.valueOf(s.getPrecio()));
+                tabla.addCell(celdaNormal(String.valueOf(s.getId())));
+                tabla.addCell(celdaNormal(s.getNombre()));
+                tabla.addCell(celdaNormal("$ " + s.getPrecio()));
             }
 
             doc.add(tabla);
             doc.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // =====================================================================
-    // ========================== 5. REPORTE CITAS ==========================
-    // =====================================================================
+    // ======================= REPORTE CITAS ========================
 
     public static void generarReporteGeneralCitas(List<Cita> citas) {
         try {
@@ -342,34 +304,29 @@ public class GeneradorReportesPDF {
             Image logo = cargarLogo();
             if (logo != null) doc.add(logo);
 
-            Paragraph titulo = new Paragraph("REPORTE GENERAL DE CITAS",
-                    new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD));
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(20);
-            doc.add(titulo);
+            doc.add(tituloCentrado("REPORTE DE CITAS"));
 
             PdfPTable tabla = new PdfPTable(5);
             tabla.setWidthPercentage(100);
 
-            tabla.addCell("ID Cita");
-            tabla.addCell("Cliente");
-            tabla.addCell("Profesional");
-            tabla.addCell("Servicio");
-            tabla.addCell("Fecha/Hora");
+            tabla.addCell(celdaHeader("ID"));
+            tabla.addCell(celdaHeader("Cliente"));
+            tabla.addCell(celdaHeader("Profesional"));
+            tabla.addCell(celdaHeader("Servicio"));
+            tabla.addCell(celdaHeader("Fecha/Hora"));
 
-            for (Cita c : citas) {
-                tabla.addCell(String.valueOf(c.getId()));
-                tabla.addCell(c.getCliente().getNombre());
-                tabla.addCell(c.getProfesional().getNombre());
-                tabla.addCell(c.getServicio().getNombre());
-                tabla.addCell(c.getFechaHora().toString());
+            for (Cita cita : citas) {
+                tabla.addCell(celdaNormal(String.valueOf(cita.getId())));
+                tabla.addCell(celdaNormal(cita.getCliente().getNombre()));
+                tabla.addCell(celdaNormal(cita.getProfesional().getNombre()));
+                tabla.addCell(celdaNormal(cita.getServicio().getNombre()));
+                tabla.addCell(celdaNormal(cita.getFechaHora().toString()));
             }
 
             doc.add(tabla);
             doc.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
+
 }

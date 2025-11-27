@@ -2,21 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+// VentanaProfesionales.java
 package com.mycompany.gestor_citas;
+
 import java.awt.*;
 import javax.swing.*;
-
-/**
- *
- * @author ASUS VIVOBOOK
- */
-
-
-
 import javax.swing.table.DefaultTableModel;
+
+/*
+  Ventana para gestionar profesionales:
+  - Formulario simple arriba (nombre, teléfono, correo, especialidad).
+  - Tabla abajo con lista de profesionales.
+  - Botones en la parte inferior (Registrar, Eliminar, Limpiar, Volver).
+*/
 public class VentanaProfesionales extends javax.swing.JFrame {
 
-    
     private final Agenda agenda;
     private final JTextField txtNombre, txtTelefono, txtCorreo, txtEspecialidad;
     private final JTable tablaProfesionales;
@@ -25,46 +25,35 @@ public class VentanaProfesionales extends javax.swing.JFrame {
     public VentanaProfesionales(Agenda agenda) {
         this.agenda = agenda;
 
+        // Ventana básica
         setTitle("Gestor de Citas - Profesionales");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(240, 242, 245));
-         // === Logo en la barra de título ===
+
+        // Icono en la barra (si existe)
         try {
             ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
             this.setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("No se pudo cargar el logo: " + e.getMessage());
         }
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-panelSuperior.setBackground(Color.WHITE);
-panelSuperior.setPreferredSize(new Dimension(900, 100));
 
-try {
-    ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
-    Image img = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-    JLabel lblLogo = new JLabel(new ImageIcon(img));
-    lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-    panelSuperior.add(lblLogo, BorderLayout.WEST);
-} catch (Exception e) {
-    System.out.println("No se pudo cargar el logo: " + e.getMessage());
-}
-
-        // Panel superior
+        // Título en la parte superior
         JLabel lblTitulo = new JLabel("Registro de Profesionales", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblTitulo.setForeground(new Color(40, 40, 90));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add(lblTitulo, BorderLayout.NORTH);
 
-        // Panel central con formulario y tabla
+        // Contenedor central con formulario y tabla
         JPanel panelCentro = new JPanel(new BorderLayout(15, 15));
         panelCentro.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panelCentro.setBackground(new Color(240, 242, 245));
 
-        // Formulario
+        // FORMULARIO (arriba del panel central)
         JPanel panelFormulario = new JPanel(new GridLayout(4, 2, 10, 10));
         panelFormulario.setBackground(Color.WHITE);
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -87,7 +76,7 @@ try {
 
         panelCentro.add(panelFormulario, BorderLayout.NORTH);
 
-        // Tabla
+        // TABLA que muestra los profesionales
         modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Teléfono", "Correo", "Especialidad"}, 0);
         tablaProfesionales = new JTable(modeloTabla);
         tablaProfesionales.setRowHeight(25);
@@ -96,7 +85,7 @@ try {
 
         add(panelCentro, BorderLayout.CENTER);
 
-        // Botones inferiores
+        // BOTONES inferiores (acción centralizada)
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         panelBotones.setBackground(Color.WHITE);
 
@@ -111,16 +100,17 @@ try {
         panelBotones.add(btnVolver);
         add(panelBotones, BorderLayout.SOUTH);
 
-        // Eventos
+        // EVENTOS de botones
         btnRegistrar.addActionListener(e -> registrarProfesional());
         btnEliminar.addActionListener(e -> eliminarProfesional());
         btnLimpiar.addActionListener(e -> limpiarCampos());
         btnVolver.addActionListener(e -> dispose());
 
-        refrescarTabla();
+        refrescarTabla(); // carga inicial
         setVisible(true);
     }
 
+    // Crea botón con estilo y hover
     private JButton crearBoton(String texto) {
         JButton b = new JButton(texto);
         b.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -136,6 +126,7 @@ try {
         return b;
     }
 
+    // Crea y agrega un profesional nuevo (valida campos)
     private void registrarProfesional() {
         try {
             String nombre = txtNombre.getText();
@@ -159,6 +150,7 @@ try {
         }
     }
 
+    // Elimina el profesional seleccionado y persiste
     private void eliminarProfesional() {
         int fila = tablaProfesionales.getSelectedRow();
         if (fila >= 0) {
@@ -171,6 +163,7 @@ try {
         }
     }
 
+    // Limpia los campos del formulario
     private void limpiarCampos() {
         txtNombre.setText("");
         txtTelefono.setText("");
@@ -178,6 +171,7 @@ try {
         txtEspecialidad.setText("");
     }
 
+    // Refresca la tabla leyendo la lista desde agenda
     private void refrescarTabla() {
         modeloTabla.setRowCount(0);
         for (Profesional p : agenda.getProfesionales()) {

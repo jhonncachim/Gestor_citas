@@ -1,3 +1,4 @@
+// VentanaPrinci.java
 package com.mycompany.gestor_citas;
 
 import javax.swing.*;
@@ -5,14 +6,21 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/*
+  Ventana principal (Dashboard).
+  - Crea la topbar con logo y título.
+  - Crea sidebar con botones estilo "pill" (redondeados).
+  - Muestra un tarjeta de bienvenida en el centro.
+  - Cada botón abre la ventana correspondiente pasando la misma Agenda.
+*/
 public class VentanaPrinci extends JFrame {
     private final JPanel panelMenu;
     private final JPanel panelContenido;
-    private final JLabel lblTitulo;
-    private final Agenda agenda; // ahora se asigna correctamente desde el constructor
+    private final Agenda agenda;
 
     public VentanaPrinci(Agenda agenda) {
-        this.agenda = agenda; //  CORRECCIÓN: se usa la instancia recibida
+        this.agenda = agenda;
+
         setTitle("Gestor de Citas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
@@ -20,7 +28,7 @@ public class VentanaPrinci extends JFrame {
         setLayout(new BorderLayout());
         setUndecorated(false);
 
-        // === Logo en la barra de título ===
+        // Icono de la aplicación (barra título)
         try {
             ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
             this.setIconImage(icon.getImage());
@@ -28,54 +36,54 @@ public class VentanaPrinci extends JFrame {
             System.out.println("No se pudo cargar el logo: " + e.getMessage());
         }
 
-        // PANEL SUPERIOR con logo grande
-JPanel panelSuperior = new JPanel(new BorderLayout());
-panelSuperior.setBackground(Color.WHITE);
-panelSuperior.setPreferredSize(new Dimension(1200, 100));
+        // TOPBAR (barra superior)
+        // Color oscuro y logo a la izquierda, título centrado.
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setBackground(Color.decode("#0F172A"));
+        topBar.setPreferredSize(new Dimension(0, 80));
+        topBar.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
 
-// Logo escalado
-try {
-    ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
-    Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-    JLabel lblLogo = new JLabel(new ImageIcon(img));
-    lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-    panelSuperior.add(lblLogo, BorderLayout.WEST);
-} catch (Exception e) {
-    System.out.println("No se pudo cargar el logo: " + e.getMessage());
-}
+        // Carga y agrega el logo (si existe)
+        try {
+            ImageIcon ico = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+            Image img = ico.getImage().getScaledInstance(56, 56, Image.SCALE_SMOOTH);
+            JLabel l = new JLabel(new ImageIcon(img));
+            topBar.add(l, BorderLayout.WEST);
+        } catch (Exception ex) { /* si falla, seguimos sin logo */ }
 
-        lblTitulo = new JLabel("GESTOR DE CITAS", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
-        lblTitulo.setForeground(new Color(30, 30, 60));
-        panelSuperior.add(lblTitulo, BorderLayout.CENTER);
-        add(panelSuperior, BorderLayout.NORTH);
+        // Título principal
+        JLabel lblTitle = new JLabel("Panel Principal", SwingConstants.CENTER);
+        lblTitle.setForeground(Color.WHITE);
+        lblTitle.setFont(new Font("Segoe UI Semibold", Font.BOLD, 24));
+        topBar.add(lblTitle, BorderLayout.CENTER);
 
-        // ===== PANEL LATERAL =====
+        add(topBar, BorderLayout.NORTH);
+
+        // SIDEBAR con gradiente
+        // - contiene botones pill (redondeados).
+        // - layout vertical con espacio.
         panelMenu = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                GradientPaint gp = new GradientPaint(
-                        0, 0, new Color(25, 40, 80),
-                        0, getHeight(), new Color(60, 140, 255)
-                );
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
+                Graphics2D g2 = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, Color.decode("#1E293B"), 0, getHeight(), Color.decode("#0EA5E9"));
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        panelMenu.setLayout(new GridLayout(7, 1, 0, 15));
-        panelMenu.setPreferredSize(new Dimension(250, 0));
-        panelMenu.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
+        panelMenu.setLayout(new GridLayout(10, 1, 0, 12));
+        panelMenu.setPreferredSize(new Dimension(260, 0));
+        panelMenu.setBorder(BorderFactory.createEmptyBorder(32, 20, 32, 20));
 
-        // ===== BOTONES =====
-        JButton btnInicio = crearBoton("  Inicio");
-        JButton btnClientes = crearBoton("  Clientes");
-        JButton btnProfesionales = crearBoton(" Profesionales");
-        JButton btnServicios = crearBoton("  Servicios");
-        JButton btnCitas = crearBoton("  Citas");
-        JButton btnReportes = crearBoton(" Reportes");
-        JButton btnSalir = crearBoton(" Cerrar Sesión");
+        // BOTONES del sidebar
+        JButton btnInicio = crearBotonPill("Inicio");
+        JButton btnClientes = crearBotonPill("Clientes");
+        JButton btnProfesionales = crearBotonPill("Profesionales");
+        JButton btnServicios = crearBotonPill("Servicios");
+        JButton btnCitas = crearBotonPill("Citas");
+        JButton btnReportes = crearBotonPill("Reportes");
+        JButton btnSalir = crearBotonPill("Cerrar sesión");
 
         panelMenu.add(btnInicio);
         panelMenu.add(btnClientes);
@@ -83,101 +91,107 @@ try {
         panelMenu.add(btnServicios);
         panelMenu.add(btnCitas);
         panelMenu.add(btnReportes);
+        panelMenu.add(Box.createVerticalGlue()); // empuja el botón de salir al final
         panelMenu.add(btnSalir);
+
         add(panelMenu, BorderLayout.WEST);
 
-        // ===== PANEL CENTRAL =====
-        panelContenido = new JPanel();
-        panelContenido.setBackground(new Color(240, 242, 245));
-        panelContenido.setLayout(new GridBagLayout());
-        mostrarInicio();
+        // PANEL CONTENIDO CENTRAL
+        // - fondo oscuro para contraste con tarjeta azul.
+        panelContenido = new JPanel(new GridBagLayout());
+        panelContenido.setBackground(Color.decode("#0F172A"));
+        mostrarInicio(); // carga la tarjeta de bienvenida
         add(panelContenido, BorderLayout.CENTER);
 
-        // ===== EVENTOS =====
+        // EVENTOS de los botones
+        // - cada uno abre su ventana y pasa la instancia de agenda.
+
         btnInicio.addActionListener(e -> mostrarInicio());
         btnClientes.addActionListener(e -> new VentanaClientes(agenda).setVisible(true));
         btnProfesionales.addActionListener(e -> new VentanaProfesionales(agenda).setVisible(true));
         btnServicios.addActionListener(e -> new VentanaServicios(agenda).setVisible(true));
         btnCitas.addActionListener(e -> new VentanaCitas(agenda).setVisible(true));
-        btnReportes.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Generando reportes PDF...\n(Revisar carpeta del proyecto)",
-                "Reportes", JOptionPane.INFORMATION_MESSAGE));
+        btnReportes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Generando reportes PDF...", "Reportes", JOptionPane.INFORMATION_MESSAGE));
         btnSalir.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "¿Deseas cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 dispose();
-                new com.mycompany.gestor_citas.LoginForm().setVisible(true);
+                new LoginForm().setVisible(true);
             }
         });
 
         setVisible(true);
     }
 
-    // ===== BOTONES CON EFECTO HOVER ELEGANTE =====
-    private JButton crearBoton(String texto) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        boton.setForeground(Color.WHITE);
-        boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        boton.setContentAreaFilled(false);
-        boton.setOpaque(false);
-
-        boton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                boton.setBackground(new Color(255, 255, 255, 40));
-                boton.setOpaque(true);
-                boton.setForeground(Color.WHITE);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                boton.setOpaque(false);
-                boton.setForeground(Color.WHITE);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                boton.setBackground(new Color(200, 220, 255, 100));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                boton.setBackground(new Color(255, 255, 255, 60));
-            }
+    // Crea un botón "pill" redondeado con hover sencillo.
+    private JButton crearBotonPill(String texto) {
+        JButton b = new JButton(texto);
+        b.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        b.setForeground(Color.WHITE);
+        b.setBackground(Color.decode("#0EA5E9"));
+        b.setFocusPainted(false);
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        b.setOpaque(true);
+        b.setBorder(new RoundedBorder(30, Color.decode("#0EA5E9")));
+        b.setPreferredSize(new Dimension(200, 44));
+        b.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) { b.setBackground(Color.decode("#38BDF8")); }
+            @Override public void mouseExited(MouseEvent e) { b.setBackground(Color.decode("#0EA5E9")); }
         });
-
-        return boton;
+        return b;
     }
 
-    // ===== CONTENIDO DE INICIO =====
+    // Muestra la tarjeta grande de bienvenida en el centro (gradiente azul)
     private void mostrarInicio() {
         panelContenido.removeAll();
 
-        JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(700, 400));
-        card.setBackground(Color.WHITE);
-        card.setLayout(new BorderLayout());
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
-                BorderFactory.createEmptyBorder(40, 40, 40, 40)
-        ));
+        JPanel tarjeta = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(0,0, Color.decode("#0EA5E9"), getWidth(), getHeight(), Color.decode("#006C9A"));
+                g2.setPaint(gp);
+                g2.fillRoundRect(0,0,getWidth(),getHeight(),24,24);
+            }
+        };
+        tarjeta.setPreferredSize(new Dimension(820,420));
+        tarjeta.setOpaque(false);
+        tarjeta.setLayout(new BorderLayout());
+        tarjeta.setBorder(BorderFactory.createEmptyBorder(28,28,28,28));
 
-        JLabel titulo = new JLabel(" Bienvenido al Gestor de Citas ", SwingConstants.CENTER);
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        titulo.setForeground(new Color(30, 30, 90));
+        // Encabezado y subtítulo dentro de la tarjeta
+        JLabel h = new JLabel("Bienvenido a ReservaPro", SwingConstants.CENTER);
+        h.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
+        h.setForeground(Color.white);
 
-        JLabel subtitulo = new JLabel("<html><div style='text-align:center;'>Administra clientes, profesionales, servicios y citas.<br>Selecciona una opción en el menú lateral para comenzar.</div></html>", SwingConstants.CENTER);
-        subtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-        subtitulo.setForeground(new Color(90, 90, 90));
+        JLabel subt = new JLabel("<html><div style='text-align:center; color:white; font-size:16px;'>"
+                        + "Gestiona clientes, profesionales, servicios y agendamiento dentro de un entorno moderno, "
+                        + "ágil y visualmente profesional.<br><br>"
+                        + "Utiliza el menú lateral para acceder a cada módulo del sistema."
+                        + "</div></html>", SwingConstants.CENTER);
+        subt.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-        card.add(titulo, BorderLayout.NORTH);
-        card.add(subtitulo, BorderLayout.CENTER);
+        tarjeta.add(h, BorderLayout.NORTH);
+        tarjeta.add(subt, BorderLayout.CENTER);
 
-        panelContenido.add(card, new GridBagConstraints());
+        panelContenido.add(tarjeta, new GridBagConstraints());
         panelContenido.revalidate();
         panelContenido.repaint();
+    }
+
+    // Clase interna para dibujar bordes redondeados en los botones
+    private static class RoundedBorder implements javax.swing.border.Border {
+        private final int radius;
+        private final Color color;
+        public RoundedBorder(int r, Color c){ radius=r; color=c; }
+        public Insets getBorderInsets(Component c){ return new Insets(radius,radius,radius,radius); }
+        public boolean isBorderOpaque(){ return true; }
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height){
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(color);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.drawRoundRect(x+1,y+1,width-2,height-2,radius,radius);
+        }
     }
 }

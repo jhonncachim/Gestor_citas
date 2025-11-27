@@ -30,7 +30,7 @@ public class VentanaCitas extends javax.swing.JFrame {
         // -----------------------------
         // PANEL SUPERIOR: LOGO + TÍTULO
         // -----------------------------
-        JLabel titulo = new JLabel("Gestión de Citas", SwingConstants.CENTER);
+        JLabel titulo = new JLabel("ReservaPro", SwingConstants.CENTER);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titulo.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 

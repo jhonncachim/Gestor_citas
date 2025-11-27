@@ -2,13 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+// VentanaServicios.java
 package com.mycompany.gestor_citas;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-public class VentanaServicios extends javax.swing.JFrame {
 
+/*
+  Ventana para gestionar servicios:
+  - Formulario (nombre, duración, precio).
+  - Tabla con servicios actuales.
+  - Botones para registrar, eliminar, limpiar y volver.
+*/
+public class VentanaServicios extends javax.swing.JFrame {
 
     private final Agenda agenda;
     private final JTextField txtNombre, txtDuracion, txtPrecio;
@@ -18,33 +25,20 @@ public class VentanaServicios extends javax.swing.JFrame {
     public VentanaServicios(Agenda agenda) {
         this.agenda = agenda;
 
-        setTitle("Gestor de Citas - Servicios");
+        setTitle("ReservaPro - Servicios");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(240, 242, 245));
-        // === Logo en la barra de título ===
+
+        // Icono ventana
         try {
             ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
             this.setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("No se pudo cargar el logo: " + e.getMessage());
         }
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-panelSuperior.setBackground(Color.WHITE);
-panelSuperior.setPreferredSize(new Dimension(800, 100));
-
-try {
-    ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
-    Image img = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-    JLabel lblLogo = new JLabel(new ImageIcon(img));
-    lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-    panelSuperior.add(lblLogo, BorderLayout.WEST);
-} catch (Exception e) {
-    System.out.println("No se pudo cargar el logo: " + e.getMessage());
-}
-
 
         JLabel lblTitulo = new JLabel("Gestión de Servicios", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -56,6 +50,7 @@ try {
         panelCentro.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panelCentro.setBackground(new Color(240, 242, 245));
 
+        // FORMULARIO
         JPanel panelFormulario = new JPanel(new GridLayout(3, 2, 10, 10));
         panelFormulario.setBackground(Color.WHITE);
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -74,6 +69,7 @@ try {
 
         panelCentro.add(panelFormulario, BorderLayout.NORTH);
 
+        // TABLA
         modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Duración", "Precio"}, 0);
         tablaServicios = new JTable(modeloTabla);
         tablaServicios.setRowHeight(25);
@@ -82,6 +78,7 @@ try {
 
         add(panelCentro, BorderLayout.CENTER);
 
+        // BOTONES
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         panelBotones.setBackground(Color.WHITE);
 
@@ -96,6 +93,7 @@ try {
         panelBotones.add(btnVolver);
         add(panelBotones, BorderLayout.SOUTH);
 
+        // EVENTOS
         btnRegistrar.addActionListener(e -> registrarServicio());
         btnEliminar.addActionListener(e -> eliminarServicio());
         btnLimpiar.addActionListener(e -> limpiarCampos());
@@ -105,6 +103,7 @@ try {
         setVisible(true);
     }
 
+    // Botón con estilo y hover (igual que en Profesionales)
     private JButton crearBoton(String texto) {
         JButton b = new JButton(texto);
         b.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -120,6 +119,7 @@ try {
         return b;
     }
 
+    // Registrar servicio: convierte datos y agrega a agenda
     private void registrarServicio() {
         try {
             String nombre = txtNombre.getText();
@@ -132,7 +132,7 @@ try {
             }
 
             int id = agenda.obtenerProximoIdServicio();
-            Servicio s = new Servicio(id, nombre, (int) precio,duracion);
+            Servicio s = new Servicio(id, nombre, (int) precio, duracion);
             agenda.agregarServicio(s);
             refrescarTabla();
             limpiarCampos();
@@ -142,6 +142,7 @@ try {
         }
     }
 
+    // Elimina servicio seleccionado y guarda cambios
     private void eliminarServicio() {
         int fila = tablaServicios.getSelectedRow();
         if (fila >= 0) {
@@ -160,6 +161,7 @@ try {
         txtPrecio.setText("");
     }
 
+    // Rellena la tabla con servicios de la agenda
     private void refrescarTabla() {
         modeloTabla.setRowCount(0);
         for (Servicio s : agenda.getServicios()) {
