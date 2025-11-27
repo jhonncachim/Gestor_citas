@@ -43,8 +43,7 @@ public class Gestor_citas {
         List<Cita> citas = agenda.getCitas();
         GeneradorReportesPDF.generarConsolidadoClientes(agenda.getClientes());
         GeneradorReportesPDF.generarConsolidadoProfesionales(agenda.getProfesionales());
-        GeneradorReportesPDF.generarReporteGeneralServicios(citas);
-
+GeneradorReportesPDF.generarReporteGeneralCitas(citas);
   /**      
         abrirPDF("Consolidado_Clientes.pdf");
         abrirPDF("Consolidado_Profesionales.pdf");
@@ -281,8 +280,9 @@ public class Gestor_citas {
     GeneradorReportesPDF.generarConsolidadoProfesionales(agenda.getProfesionales());
 
     if (!citas.isEmpty()) {
-        GeneradorReportesPDF.generarReporteGeneralServicios(citas);
-    }
+GeneradorReportesPDF.generarReporteGeneralCitas(citas);
+  } 
+    
 
     System.out.println("Reportes actualizados correctamente.");
 }

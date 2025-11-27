@@ -1,4 +1,5 @@
 com\mycompany\gestor_citas\Auxiliares\Autenticacion.class
+com\mycompany\gestor_citas\Auxiliares\Factura.class
 com\mycompany\gestor_citas\Servicio.class
 com\mycompany\gestor_citas\Auxiliares\GestorArchivos.class
 com\mycompany\gestor_citas\Cita.class

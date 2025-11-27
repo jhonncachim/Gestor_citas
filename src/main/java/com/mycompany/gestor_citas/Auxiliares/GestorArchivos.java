@@ -10,6 +10,7 @@ import com.mycompany.gestor_citas.Cliente;
 import com.mycompany.gestor_citas.Profesional;
 import com.mycompany.gestor_citas.Servicio;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -65,6 +66,55 @@ public class GestorArchivos {
         }
     }
 
+    private static final String RUTA_FACTURAS = "facturas.csv";
+public static void cargarFacturas(Agenda agenda) {
+    try (BufferedReader br = new BufferedReader(new FileReader(RUTA_FACTURAS))) {
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            String[] p = linea.split(";");
+            if (p.length == 7) {
+
+                Cliente cli = agenda.buscarClientePorId(Integer.parseInt(p[1]));
+                Profesional pro = agenda.buscarProfesionalPorId(Integer.parseInt(p[2]));
+                Servicio ser = agenda.buscarServicioPorId(Integer.parseInt(p[3]));
+
+                Factura f = new Factura(
+                    Integer.parseInt(p[0]), 
+                    cli, pro, ser,
+                    LocalDateTime.parse(p[4]),
+                    Double.parseDouble(p[5]),
+                    Double.parseDouble(p[6])
+                );
+
+                agenda.agregarFactura(f);
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("No hay facturas aún.");
+    }
+}
+
+
+public static void guardarFacturas(List<Factura> facturas) {
+    try (PrintWriter pw = new PrintWriter(new FileWriter(RUTA_FACTURAS))) {
+
+        for (Factura f : facturas) {
+            pw.println(
+                f.getId() + ";" +
+                f.getCliente().getId() + ";" +
+                f.getProfesional().getId() + ";" +
+                f.getServicio().getId() + ";" +
+                f.getFechaCita() + ";" +
+                f.getPrecio() + ";" +
+                f.getTotal()
+            );
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error al guardar facturas");
+        e.printStackTrace();
+    }
+}
     public static void cargarClientes(Agenda agenda) {
         try (BufferedReader br = new BufferedReader(new FileReader(RUTA_CLIENTES))) {
             String linea;

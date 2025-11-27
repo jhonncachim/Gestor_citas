@@ -12,7 +12,7 @@ public class VentanaPrinci extends JFrame {
     private final Agenda agenda; // ahora se asigna correctamente desde el constructor
 
     public VentanaPrinci(Agenda agenda) {
-        this.agenda = agenda; // ✅ CORRECCIÓN: se usa la instancia recibida
+        this.agenda = agenda; //  CORRECCIÓN: se usa la instancia recibida
         setTitle("Gestor de Citas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
@@ -20,10 +20,29 @@ public class VentanaPrinci extends JFrame {
         setLayout(new BorderLayout());
         setUndecorated(false);
 
-        // ===== PANEL SUPERIOR =====
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setBackground(Color.WHITE);
-        panelSuperior.setPreferredSize(new Dimension(1200, 70));
+        // === Logo en la barra de título ===
+        try {
+            ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+            this.setIconImage(icon.getImage());
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el logo: " + e.getMessage());
+        }
+
+        // PANEL SUPERIOR con logo grande
+JPanel panelSuperior = new JPanel(new BorderLayout());
+panelSuperior.setBackground(Color.WHITE);
+panelSuperior.setPreferredSize(new Dimension(1200, 100));
+
+// Logo escalado
+try {
+    ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+    Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+    JLabel lblLogo = new JLabel(new ImageIcon(img));
+    lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    panelSuperior.add(lblLogo, BorderLayout.WEST);
+} catch (Exception e) {
+    System.out.println("No se pudo cargar el logo: " + e.getMessage());
+}
 
         lblTitulo = new JLabel("GESTOR DE CITAS", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));

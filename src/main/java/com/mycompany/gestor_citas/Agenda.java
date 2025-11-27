@@ -4,10 +4,12 @@
  */
 package com.mycompany.gestor_citas;
 
+import com.mycompany.gestor_citas.Auxiliares.Factura;
 import com.mycompany.gestor_citas.Auxiliares.GeneradorPDF;
 import com.mycompany.gestor_citas.Auxiliares.GestorArchivos;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -134,6 +136,18 @@ public class Agenda {
             c.mostrarCita();
         }
     }
+
+    private List<Factura> facturas = new ArrayList<>();
+
+public List<Factura> getFacturas() { return facturas; }
+
+public void agregarFactura(Factura f) {
+    facturas.add(f);
+}
+
+public int obtenerProximoIdFactura() {
+    return facturas.isEmpty() ? 1 : facturas.get(facturas.size()-1).getId() + 1;
+}
 
     // Getters para acceder a las listas desde otras clases
     public ArrayList<Cita> getCitas() { return citas; }

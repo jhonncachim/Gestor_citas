@@ -4,6 +4,8 @@
  */
 package com.mycompany.gestor_citas;
 
+import com.mycompany.gestor_citas.Auxiliares.Factura;
+import com.mycompany.gestor_citas.Auxiliares.GestorArchivos;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -25,11 +27,31 @@ public class VentanaCitas extends javax.swing.JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10,10));
 
+        // -----------------------------
+        // PANEL SUPERIOR: LOGO + TÍTULO
+        // -----------------------------
         JLabel titulo = new JLabel("Gestión de Citas", SwingConstants.CENTER);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titulo.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
-        add(titulo, BorderLayout.NORTH);
 
+        JLabel logo = new JLabel();
+        try {
+            ImageIcon img = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+            Image esc = img.getImage().getScaledInstance(55, 55, Image.SCALE_SMOOTH);
+            logo.setIcon(new ImageIcon(esc));
+        } catch (Exception ex) {
+            System.out.println("No se pudo cargar el logo.");
+        }
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.add(logo, BorderLayout.WEST);
+        header.add(titulo, BorderLayout.CENTER);
+
+        add(header, BorderLayout.NORTH);
+
+        // -----------------------------
+        // FORMULARIO IZQUIERDO
+        // -----------------------------
         JPanel form = new JPanel(new GridLayout(8, 2, 8, 8));
         form.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -54,12 +76,25 @@ public class VentanaCitas extends javax.swing.JFrame {
 
         add(form, BorderLayout.WEST);
 
+        // -----------------------------
+        // BOTONES
+        // -----------------------------
         JButton btnRegistrar = new JButton("Registrar Cita");
         JButton btnEliminar = new JButton("Eliminar Cita");
+        JButton btnAtender = new JButton("Marcar como atendida");
+        JButton btnFactura = new JButton("Generar Factura");
+
         JPanel botones = new JPanel();
-        botones.add(btnRegistrar); botones.add(btnEliminar);
+        botones.add(btnRegistrar);
+        botones.add(btnEliminar);
+        botones.add(btnAtender);
+        botones.add(btnFactura);
+
         add(botones, BorderLayout.SOUTH);
 
+        // -----------------------------
+        // TABLA
+        // -----------------------------
         modelo = new DefaultTableModel(new Object[]{"ID","Cliente","Profesional","Servicio","Fecha y hora","Estado"},0) {
             @Override public boolean isCellEditable(int r,int c){return false;}
         };
@@ -67,13 +102,46 @@ public class VentanaCitas extends javax.swing.JFrame {
         tabla.setRowHeight(26);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
+        // -----------------------------
+        // EVENTOS
+        // -----------------------------
         refreshCombos();
         refreshTabla();
 
         btnRegistrar.addActionListener(e -> registrarCita());
         btnEliminar.addActionListener(e -> eliminarCita(tabla));
+        btnFactura.addActionListener(e -> generarFactura(tabla));
 
-        // Actualización automática del estado
+        btnAtender.addActionListener(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila == -1) {
+                JOptionPane.showMessageDialog(this, "Seleccione una cita para marcar como atendida.");
+                return;
+            }
+
+            int id = (int) modelo.getValueAt(fila, 0);
+
+            for (Cita c : agenda.getCitas()) {
+                if (c.getId() == id) {
+                    if (!c.isActiva()) {
+                        JOptionPane.showMessageDialog(this, "No puedes marcar una cita cancelada.");
+                        return;
+                    }
+                    if (c.isAtendida()) {
+                        JOptionPane.showMessageDialog(this, "Esta cita ya está marcada como atendida.");
+                        return;
+                    }
+
+                    c.marcarAtendida();
+                    GestorArchivos.guardarCitas(agenda.getCitas());
+                    refreshTabla();
+                    JOptionPane.showMessageDialog(this, "Cita marcada como atendida.");
+                    return;
+                }
+            }
+        });
+
+        // ACTUALIZACIÓN AUTOMÁTICA
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask(){
             @Override
@@ -83,28 +151,44 @@ public class VentanaCitas extends javax.swing.JFrame {
         setVisible(true);
     }
 
+    // --------------------------------------------------------------
+    // MÉTODOS
+    // --------------------------------------------------------------
     private void refreshCombos() {
         cbCliente.removeAllItems();
-        for (Cliente c : agenda.getClientes()) cbCliente.addItem(c.getId() + " - " + c.getNombre());
+        for (Cliente c : agenda.getClientes())
+            cbCliente.addItem(c.getId() + " - " + c.getNombre());
 
         cbProfesional.removeAllItems();
-        for (Profesional p : agenda.getProfesionales()) cbProfesional.addItem(p.getId() + " - " + p.getNombre());
+        for (Profesional p : agenda.getProfesionales())
+            cbProfesional.addItem(p.getId() + " - " + p.getNombre());
 
         cbServicio.removeAllItems();
-        for (Servicio s : agenda.getServicios()) cbServicio.addItem(s.getId() + " - " + s.getNombre());
+        for (Servicio s : agenda.getServicios())
+            cbServicio.addItem(s.getId() + " - " + s.getNombre());
     }
+
+    private final java.time.format.DateTimeFormatter FORMATO =
+        java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private void refreshTabla() {
         modelo.setRowCount(0);
         LocalDateTime ahora = LocalDateTime.now();
+
         for (Cita c : agenda.getCitas()) {
-            String estado = c.isActiva() ? (c.getFechaHora().isBefore(ahora) ? "Caducada" : "Activa") : "Cancelada";
+            String estado;
+
+            if (!c.isActiva()) estado = "Cancelada";
+            else if (c.isAtendida()) estado = "Atendida";
+            else if (c.getFechaHora().isBefore(ahora)) estado = "Caducada";
+            else estado = "Activa";
+
             modelo.addRow(new Object[]{
-                c.getId(), 
-                c.getCliente().getNombre(), 
+                c.getId(),
+                c.getCliente().getNombre(),
                 c.getProfesional().getNombre(),
-                c.getServicio().getNombre(), 
-                c.getFechaHora().toString().replace('T', ' '), 
+                c.getServicio().getNombre(),
+                c.getFechaHora().format(FORMATO),
                 estado
             });
         }
@@ -129,7 +213,6 @@ public class VentanaCitas extends javax.swing.JFrame {
             Profesional profesional = agenda.buscarProfesionalPorId(idProf);
             Servicio servicio = agenda.buscarServicioPorId(idServ);
 
-            // Leer fecha y hora separadas
             int dia = Integer.parseInt(txtDia.getText());
             int mes = Integer.parseInt(txtMes.getText());
             int anio = Integer.parseInt(txtAnio.getText());
@@ -141,7 +224,7 @@ public class VentanaCitas extends javax.swing.JFrame {
             int id = agenda.obtenerProximoIdCita();
             Cita cita = new Cita(id, cliente, profesional, servicio, fechaHora);
             agenda.agregarCita(cita);
-            com.mycompany.gestor_citas.Auxiliares.GestorArchivos.guardarCitas(agenda.getCitas());
+            GestorArchivos.guardarCitas(agenda.getCitas());
 
             refreshTabla();
             limpiarCampos();
@@ -162,13 +245,51 @@ public class VentanaCitas extends javax.swing.JFrame {
 
         int id = (int) modelo.getValueAt(fila, 0);
         Cita rem = null;
-        for (Cita c : agenda.getCitas()) if (c.getId() == id) { rem = c; break; }
+
+        for (Cita c : agenda.getCitas())
+            if (c.getId() == id) { rem = c; break; }
 
         if (rem != null) {
             agenda.getCitas().remove(rem);
-            com.mycompany.gestor_citas.Auxiliares.GestorArchivos.guardarCitas(agenda.getCitas());
+            GestorArchivos.guardarCitas(agenda.getCitas());
             refreshTabla();
             JOptionPane.showMessageDialog(this, "Cita eliminada correctamente.");
+        }
+    }
+
+    private void generarFactura(JTable tabla) {
+        int fila = tabla.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una cita.");
+            return;
+        }
+
+        int id = (int) modelo.getValueAt(fila, 0);
+
+        for (Cita c : agenda.getCitas()) {
+            if (c.getId() == id) {
+
+                Factura factura = new Factura(
+                    agenda.obtenerProximoIdFactura(),
+                    c.getCliente(),
+                    c.getProfesional(),
+                    c.getServicio(),
+                    c.getFechaHora(),
+                    c.getServicio().getPrecio(),
+                    c.getServicio().getPrecio()
+                );
+
+                agenda.agregarFactura(factura);
+                GestorArchivos.guardarFacturas(agenda.getFacturas());
+
+                com.mycompany.gestor_citas.Auxiliares.GeneradorReportesPDF
+                    .generarFacturaPDF(factura);
+
+                JOptionPane.showMessageDialog(this,
+                    "Factura generada y guardada como PDF.\nID: " + factura.getId());
+
+                return;
+            }
         }
     }
 

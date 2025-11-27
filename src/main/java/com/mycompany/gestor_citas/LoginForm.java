@@ -4,6 +4,7 @@
  */
 package com.mycompany.gestor_citas;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +18,16 @@ public class LoginForm extends javax.swing.JFrame {
      */
     public LoginForm() {
         initComponents();
+        // Colocar el logo en la barra de título
+    try {
+        ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+        this.setIconImage(icon.getImage());
+    } catch (Exception e) {
+        System.out.println("No se pudo cargar el logo: " + e.getMessage());
+    }
+
+    setVisible(true);
+
     }
 
     /**

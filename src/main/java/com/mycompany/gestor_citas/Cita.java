@@ -19,6 +19,7 @@ public class Cita {
     private final Servicio servicio;
     private final LocalDateTime fechaHora;
     private boolean activa;
+    private boolean atendida;
 
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -40,6 +41,7 @@ public class Cita {
         this.servicio = new Servicio(0, servicio, 0,0.0);
         this.fechaHora = LocalDateTime.now();
         this.activa = true;
+        this.atendida = false;
     }
 
     public void cancelar() {
@@ -47,6 +49,12 @@ public class Cita {
         System.out.println("La cita con ID " + id + " ha sido cancelada correctamente.");
     }
 
+    public boolean isAtendida() {
+    return atendida;
+}
+    public void marcarAtendida() {
+    this.atendida = true;
+}
     public void mostrarCita() {
         System.out.println("=== Detalle de la Cita ===");
         System.out.println("ID Cita: " + id);

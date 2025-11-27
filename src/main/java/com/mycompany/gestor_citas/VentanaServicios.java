@@ -24,6 +24,27 @@ public class VentanaServicios extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(240, 242, 245));
+        // === Logo en la barra de título ===
+        try {
+            ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+            this.setIconImage(icon.getImage());
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el logo: " + e.getMessage());
+        }
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+panelSuperior.setBackground(Color.WHITE);
+panelSuperior.setPreferredSize(new Dimension(800, 100));
+
+try {
+    ImageIcon icon = new ImageIcon("C:\\Users\\ASUS VIVOBOOK\\Documents\\reser.png");
+    Image img = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+    JLabel lblLogo = new JLabel(new ImageIcon(img));
+    lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    panelSuperior.add(lblLogo, BorderLayout.WEST);
+} catch (Exception e) {
+    System.out.println("No se pudo cargar el logo: " + e.getMessage());
+}
+
 
         JLabel lblTitulo = new JLabel("Gestión de Servicios", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
